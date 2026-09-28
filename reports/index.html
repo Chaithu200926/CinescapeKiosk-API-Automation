@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kiosk API Dashboard</title>
+<style>
+:root { --bg:#f6f7fb; --panel:#fcfcfb; --ink:#1b2230; --muted:#5d6678; --line:#dde2ea; --code:#f1f3f8; --accent:#1f4e8c;
+  --good:#0ca30c; --critical:#d03b3b; --warning:#fab219;
+  --good-ink:#006300; --critical-ink:#a42525; --warning-ink:#7a5200; --good-bg:#e3f4e3; --critical-bg:#fbe7e5; --warning-bg:#fdf1d6; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#121212; --panel:#1a1a19; --ink:#e9ecf1; --muted:#9aa3b2; --line:#2e3440; --code:#141414; --accent:#8db4f0;
+  --good-ink:#5fd35f; --critical-ink:#ff8a80; --warning-ink:#fab219; --good-bg:#15301a; --critical-bg:#3a1c1c; --warning-bg:#3a2f14; } }
+:root[data-theme="dark"] { --bg:#121212; --panel:#1a1a19; --ink:#e9ecf1; --muted:#9aa3b2; --line:#2e3440; --code:#141414; --accent:#8db4f0;
+  --good-ink:#5fd35f; --critical-ink:#ff8a80; --warning-ink:#fab219; --good-bg:#15301a; --critical-bg:#3a1c1c; --warning-bg:#3a2f14; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Segoe UI", system-ui, sans-serif; }
+main { max-width:1140px; margin:0 auto; padding:32px 16px 64px; }
+h1 { margin:0; font-size:28px; } h2 { font-size:18px; margin:28px 0 12px; } h3 { margin:0; font-size:16px; flex:1; min-width:220px; }
+a { color:var(--accent); } .muted { color:var(--muted); font-size:13px; }
+.panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+.tiles { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:12px; margin:20px 0; }
+.tile { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+.tile b { display:block; font-size:28px; font-variant-numeric:tabular-nums; } .tile span { color:var(--muted); font-size:13px; }
+.two { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.kv { width:100%; border-collapse:collapse; font-size:13px; } .kv th { text-align:left; color:var(--muted); font-weight:500; padding:4px 12px 4px 0; width:38%; vertical-align:top; }
+.kv td { padding:4px 0; word-break:break-word; }
+.chart { display:flex; gap:8px; height:180px; margin-top:4px; }
+.yaxis { display:flex; flex-direction:column; justify-content:space-between; font-size:11px; color:var(--muted); padding-bottom:18px; text-align:right; min-width:18px; }
+.plot { position:relative; flex:1; display:flex; align-items:flex-end; gap:6px; }
+.grid { position:absolute; inset:0 0 18px 0; border-bottom:1px solid var(--line); background:linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 50%; opacity:.6; pointer-events:none; }
+.col { position:relative; flex:1; max-width:36px; height:100%; display:flex; flex-direction:column; align-items:center; outline:none; }
+.stack { flex:1; width:100%; display:flex; flex-direction:column; justify-content:flex-end; gap:2px; padding-bottom:0; }
+.seg { display:block; width:100%; min-height:3px; } .stack .seg:first-child { border-radius:4px 4px 0 0; }
+.seg.pass { background:var(--good); } .seg.fail { background:var(--critical); } .seg.skip { background:var(--warning); }
+.xl { font-size:11px; color:var(--muted); height:18px; line-height:18px; }
+.col:hover .stack, .col:focus .stack { opacity:.85; }
+.tip { position:fixed; pointer-events:none; background:var(--ink); color:var(--bg); font-size:12px; padding:6px 9px; border-radius:6px; white-space:pre; z-index:10; display:none; }
+.legend { display:flex; flex-wrap:wrap; gap:14px; font-size:13px; margin-top:8px; align-items:center; }
+.sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; } .sw.pass { background:var(--good); } .sw.fail { background:var(--critical); } .sw.skip { background:var(--warning); }
+.chips { display:inline-flex; gap:3px; } .chip { width:18px; height:18px; border-radius:4px; font-size:11px; font-weight:700; display:inline-grid; place-items:center; color:#fff; background:var(--line); }
+.chip.pass { background:var(--good); } .chip.fail { background:var(--critical); } .chip.skip { background:var(--warning); color:#1b2230; } .chip.none { color:var(--muted); }
+table.list { width:100%; border-collapse:collapse; font-size:14px; } table.list th, table.list td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+table.list th { color:var(--muted); font-weight:500; font-size:13px; }
+.pill { display:inline-block; font-size:12px; font-weight:600; padding:1px 9px; border-radius:20px; white-space:nowrap; }
+.pill.pass { background:var(--good-bg); color:var(--good-ink); } .pill.fail { background:var(--critical-bg); color:var(--critical-ink); } .pill.skip { background:var(--warning-bg); color:var(--warning-ink); }
+.test { background:var(--panel); border:1px solid var(--line); border-left:4px solid var(--good); border-radius:10px; padding:14px 16px; margin-bottom:14px; }
+.test.fail { border-left-color:var(--critical); } .test.skip { border-left-color:var(--warning); }
+.test header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; } .test p { margin:6px 0; font-size:14px; }
+.file { font-family:Consolas, monospace; font-size:12px !important; color:var(--muted); }
+.scroll { overflow-x:auto; max-width:100%; }
+.checks { width:100%; min-width:520px; border-collapse:collapse; font-size:13px; margin:10px 0; } .checks th, .checks td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
+.checks th { color:var(--muted); font-weight:500; } .checks code { font-size:12px; word-break:break-word; } .checks tr.bad td { background:var(--critical-bg); }
+.call { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:10px 0; }
+.call-head { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.method { font-weight:700; font-size:12px; color:var(--accent); } .path { font-family:Consolas, monospace; font-size:13px; word-break:break-all; flex:1; }
+.safe { font-size:12px !important; color:var(--good-ink); margin:6px 0 0 !important; }
+.msg { display:grid; grid-template-columns:auto 1fr; gap:2px 12px; margin-top:8px; font-size:14px; } .msg span { color:var(--muted); font-size:13px; } .msg strong { font-weight:600; word-break:break-word; }
+details { margin-top:8px; } summary { cursor:pointer; color:var(--accent); font-size:13px; }
+pre { background:var(--code); border:1px solid var(--line); border-radius:6px; padding:10px; overflow:auto; max-height:360px; font:12px/1.45 Consolas, monospace; white-space:pre-wrap; word-break:break-word; }
+pre.error { color:var(--critical-ink); max-height:none; }
+.steps { margin:6px 0 0; padding-left:18px; font-size:13px; } .steps li.bad { color:var(--critical-ink); }
+footer { color:var(--muted); font-size:13px; margin-top:24px; }
+@media (max-width:760px) { .two { grid-template-columns:1fr; } h1 { font-size:22px; } .msg { grid-template-columns:1fr; } table.list td:nth-child(4), table.list th:nth-child(4) { display:none; } }
+</style>
+</head>
+<body><main>
+<h1>CinescapeKiosk API tests</h1>
+<p class="muted">Run 1 · 2026-09-28 07:45:25 UTC · <a href="https://github.com/Chaithu200926/CinescapeKiosk-API-Automation">Repository</a> · <a href="https://github.com/Chaithu200926/CinescapeKiosk-API-Automation/actions">Actions</a> · <a href="playwright-report/index.html">Playwright HTML report</a></p>
+
+<section class="tiles">
+  <div class="tile"><b>1</b><span>Tests</span></div>
+  <div class="tile"><b>1</b><span>✓ Passed</span></div>
+  <div class="tile"><b>0</b><span>✗ Failed</span></div>
+  <div class="tile"><b>0</b><span>– Skipped</span></div>
+  <div class="tile"><b>100%</b><span>Pass rate</span></div>
+  <div class="tile"><b>1</b><span>API calls (all read-only)</span></div>
+  <div class="tile"><b>0.45s</b><span>Duration</span></div>
+</section>
+
+<section class="two">
+  <div class="panel"><h2 style="margin-top:0">Trend: last 1 run</h2><div class="chart" role="img" aria-label="Test results for the last 1 runs">
+    <div class="yaxis"><span>1</span><span>1</span><span>0</span></div>
+    <div class="plot"><div class="grid"></div><div class="col" tabindex="0" data-tip="Run 1 · 2026-09-28 07:45&#10;1 passed · 0 failed · 0 skipped&#10;Pass rate 100% · 6ad1ea1">
+        <div class="stack"><i class="seg pass" style="height:100%"></i></div>
+        <span class="xl">1</span></div></div>
+  </div>
+  <div class="legend"><span><i class="sw pass"></i>Passed</span><span><i class="sw fail"></i>Failed</span><span><i class="sw skip"></i>Skipped</span><span class="muted">Hover a column for details · x-axis: run number</span></div></div>
+  <div class="panel"><h2 style="margin-top:0">Run &amp; environment</h2><table class="kv"><tr><th>Run</th><td>1</td></tr><tr><th>Commit</th><td><a href="https://github.com/Chaithu200926/CinescapeKiosk-API-Automation/commit/6ad1ea1a5bc427505cd443b826d0f42522ab3ea2">6ad1ea1</a> Add Playwright API framework and API-01 cinemas test\n\nCo-Authored-By: Claude Opus 5.5 &lt;noreply@anthropic.com&gt;</td></tr><tr><th>Pushed by</th><td>Chaithu200926</td></tr><tr><th>Branch</th><td>main</td></tr><tr><th>Trigger</th><td>published from QA PC</td></tr><tr><th>Started</th><td>2026-09-28 07:45:25 UTC</td></tr><tr><th>Finished</th><td>2026-09-28 07:45:25 UTC</td></tr><tr><th>Machine</th><td>Local QA PC</td></tr><tr><th>OS</th><td>Windows_NT 10.0.26200</td></tr><tr><th>Node.js / Playwright</th><td>v24.21.0 / 1.63.0</td></tr><tr><th>Target API</th><td><code>http://&lt;hidden&gt;:8090/api/</code></td></tr><tr><th>Cinema ID</th><td>0000000001</td></tr><tr><th>Safety mode</th><td>Read-only allowlist enforced (src/safety.ts)</td></tr></table></div>
+</section>
+
+<h2>Overview</h2>
+<div class="panel scroll"><table class="list"><thead><tr><th>Test</th><th>Result</th><th>HTTP</th><th>Response message</th><th>Last 10 runs</th></tr></thead><tbody><tr><td><a href="#API-01">API-01 Cinemas: kiosk cinema is listed and active</a></td><td><span class="pill pass">✓ Passed</span></td>
+      <td>HTTP 200</td><td>(empty)</td><td><span class="chips" aria-label="Last 1 runs"><span class="chip pass" title="Run 1 · 2026-09-28 07:45 · Passed">✓</span></span></td></tr></tbody></table></div>
+
+<h2>Test details</h2>
+<article class="test pass" id="API-01">
+  <header>
+    <span class="pill pass">✓ Passed</span>
+    <h3>API-01 Cinemas: kiosk cinema is listed and active</h3>
+    <span class="chips" aria-label="Last 1 runs"><span class="chip pass" title="Run 1 · 2026-09-28 07:45 · Passed">✓</span></span>
+    <span class="muted">0.04s</span>
+  </header>
+  <p class="file">api-01-cinemas.spec.ts</p>
+  <p><b>What it checks:</b> The cinema list contains the cinema this kiosk is configured for, and it is active and priced in KWD.</p>
+  <p><b>Why it matters:</b> The kiosk cannot start selling if its cinema is missing or inactive.</p>
+  
+  <div class="scroll"><table class="checks"><thead><tr><th>Check</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead><tbody><tr class=""><td>HTTP status of content/cinemas</td><td><code>200</code></td><td><code>200</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Response code</td><td><code>10001</code></td><td><code>10001</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Number of cinemas</td><td><code>&gt; 0</code></td><td><code>1</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Cinema 0000000001 is in the list</td><td><code>present</code></td><td><code>[&quot;0000000001&quot;]</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Cinema is active</td><td><code>true</code></td><td><code>true</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Currency</td><td><code>&quot;KWD&quot;</code></td><td><code>&quot;KWD&quot;</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr><tr class=""><td>Cinema has a name</td><td><code>non-empty</code></td><td><code>&quot;Cinescape 360&quot;</code></td>
+      <td><span class="pill pass">✓ Pass</span></td></tr></tbody></table></div>
+  <div class="call">
+    <div class="call-head">
+      <span class="method">GET</span>
+      <code class="path">content/cinemas</code>
+      <span class="pill pass">HTTP 200</span>
+      <span class="muted">27 ms · 1209 bytes</span>
+    </div>
+    <p class="safe">✓ Read-only call: List cinemas</p>
+    <div class="msg">
+      <span>Response message</span><strong>(empty)</strong>
+      <span>Code</span><strong>10001</strong>
+      <span>Result</span><strong>success</strong>
+    </div>
+    <details><summary>Request headers &amp; body</summary><table class="kv"><tr><th>Accept</th><td>application/json</td></tr><tr><th>platform</th><td>KIOSK</td></tr><tr><th>appversion</th><td>1.0.0</td></tr><tr><th>X-Kiosk-Key</th><td>***</td></tr></table><pre>(no body)</pre></details>
+    <details><summary>Response headers</summary><table class="kv"><tr><th>vary</th><td>Origin, Access-Control-Request-Method, Access-Control-Request-Headers</td></tr><tr><th>content-type</th><td>application/json</td></tr><tr><th>content-length</th><td>1209</td></tr><tr><th>date</th><td>Mon, 28 Sep 2026 07:45:25 GMT</td></tr><tr><th>keep-alive</th><td>timeout=60</td></tr><tr><th>connection</th><td>keep-alive</td></tr></table></details>
+    <details><summary>Full response body</summary><pre>{
+  &quot;code&quot;: 10001,
+  &quot;result&quot;: &quot;success&quot;,
+  &quot;msg&quot;: &quot;&quot;,
+  &quot;output&quot;: {
+    &quot;cinemas&quot;: [
+      {
+        &quot;id&quot;: &quot;0000000001&quot;,
+        &quot;name&quot;: &quot;Cinescape 360&quot;,
+        &quot;nameAlt&quot;: &quot;سينسكيب 360&quot;,
+        &quot;phoneNumber&quot;: &quot;&quot;,
+        &quot;emailAddress&quot;: &quot;&quot;,
+        &quot;address1&quot;: &quot;360 Mall, Zahra&quot;,
+        &quot;address2&quot;: &quot;&quot;,
+        &quot;address1Ar&quot;: &quot;مول 360، الزهراء&quot;,
+        &quot;address2Ar&quot;: &quot;&quot;,
+        &quot;workingHours&quot;: &quot;08 AM - 10 AM&quot;,
+        &quot;workingHoursAlt&quot;: &quot;08 AM - 10 AM&quot;,
+        &quot;foodStartTime&quot;: &quot;08:00&quot;,
+        &quot;foodEndTime&quot;: &quot;23:30&quot;,
+        &quot;foodEnable&quot;: false,
+        &quot;city&quot;: &quot;&quot;,
+        &quot;latitude&quot;: &quot;29.2678&quot;,
+        &quot;longitude&quot;: &quot;47.9919&quot;,
+        &quot;parkingInfo&quot;: null,
+        &quot;loyaltyCode&quot;: null,
+        &quot;giftStore&quot;: false,
+        &quot;description&quot;: &quot;&quot;,
+        &quot;descriptionAlt&quot;: &quot;&quot;,
+        &quot;currencyCode&quot;: &quot;KWD&quot;,
+        &quot;allowPrintAtHomeBookings&quot;: false,
+        &quot;allowOnlineVoucherValidation&quot;: false,
+        &quot;displaySofaSeats&quot;: false,
+        &quot;timeZoneId&quot;: null,
+        &quot;alerttxt&quot;: &quot;&quot;,
+        &quot;icon&quot;: &quot;&quot;,
+        &quot;active&quot;: true,
+        &quot;food&quot;: true,
+        &quot;foodPrepare&quot;: true,
+        &quot;prepareNow&quot;: true,
+        &quot;prepareLater&quot;: true,
+        &quot;webThumbImageUrl&quot;: &quot;https://cinescape-test-app.s3.eu-north-1.amazonaws.com/cinema/web_small/0000000001.jpg?v=937&quot;,
+        &quot;webImageUrl&quot;: &quot;&quot;,
+        &quot;appThumbImageUrl&quot;: &quot;https://cinescape-test-app.s3.eu-north-1.amazonaws.com/cinema/mob_small/0000000001.jpg&quot;,
+        &quot;appImageUrl&quot;: &quot;https://cinescape-test-app.s3.eu-north-1.amazonaws.com/cinema/mob_big/0000000001.jpg&quot;,
+        &quot;priority&quot;: 2,
+        &quot;experiences&quot;: [],
+        &quot;exps&quot;: [
+          &quot;VIP&quot;,
+          &quot;IMAX&quot;,
+          &quot;4DX&quot;,
+          &quot;DOLBY&quot;,
+          &quot;SCREENX&quot;
+        ]
+      }
+    ]
+  }
+}</pre></details>
+  </div>
+  <details><summary>3 execution steps</summary><ol class="steps"><li class="" style="margin-left:0px">GET content/cinemas <span class="muted">0.03s</span></li><li class="" style="margin-left:0px">Verify response is successful <span class="muted">0.00s</span></li><li class="" style="margin-left:0px">Verify the kiosk cinema is listed, active and priced in KWD <span class="muted">0.00s</span></li></ol></details>
+</article>
+<footer>Generated from Playwright JSON results. The kiosk API key, cookies and API host are hidden. All calls pass the read-only allowlist.</footer>
+</main>
+<div class="tip" id="tip"></div>
+<script>
+(function () {
+  var tip = document.getElementById('tip');
+  function show(e) { var c = e.currentTarget; tip.textContent = c.getAttribute('data-tip'); tip.style.display = 'block'; move(e); }
+  function move(e) { var r = e.clientX !== undefined ? e : e.currentTarget.getBoundingClientRect(); var x = (r.clientX || r.left) + 12, y = (r.clientY || r.top) - 10;
+    tip.style.left = Math.min(x, window.innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = Math.max(8, y - tip.offsetHeight) + 'px'; }
+  function hide() { tip.style.display = 'none'; }
+  document.querySelectorAll('.col').forEach(function (c) {
+    c.addEventListener('mouseenter', show); c.addEventListener('mousemove', move); c.addEventListener('mouseleave', hide);
+    c.addEventListener('focus', show); c.addEventListener('blur', hide);
+  });
+})();
+</script>
+</body></html>

@@ -1,0 +1,193 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\node_modules\\@playwright\\test\\cli.js",
+      "test"
+    ],
+    "configFile": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\playwright.config.ts",
+    "rootDir": "C:/softwares/vs code/playwright/CinescapeKiosk-API-Automation/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/softwares/vs code/playwright/CinescapeKiosk-API-Automation/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/softwares/vs code/playwright/CinescapeKiosk-API-Automation/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "html",
+        {
+          "open": "never",
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "api-01-cinemas.spec.ts",
+      "file": "api-01-cinemas.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "API-01 Cinemas: kiosk cinema is listed and active",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "purpose",
+                  "description": "The cinema list contains the cinema this kiosk is configured for, and it is active and priced in KWD.",
+                  "location": {
+                    "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-01-cinemas.spec.ts",
+                    "line": 11,
+                    "column": 5
+                  }
+                },
+                {
+                  "type": "why",
+                  "description": "The kiosk cannot start selling if its cinema is missing or inactive.",
+                  "location": {
+                    "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-01-cinemas.spec.ts",
+                    "line": 11,
+                    "column": 5
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 43,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "GET content/cinemas -> HTTP 200 | code=10001 result=success msg=\"\" (27 ms)\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "GET content/cinemas",
+                      "duration": 29
+                    },
+                    {
+                      "title": "Verify response is successful",
+                      "duration": 3
+                    },
+                    {
+                      "title": "Verify the kiosk cinema is listed, active and priced in KWD",
+                      "duration": 2
+                    }
+                  ],
+                  "startTime": "2026-09-28T07:45:25.460Z",
+                  "annotations": [
+                    {
+                      "type": "purpose",
+                      "description": "The cinema list contains the cinema this kiosk is configured for, and it is active and priced in KWD.",
+                      "location": {
+                        "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-01-cinemas.spec.ts",
+                        "line": 11,
+                        "column": 5
+                      }
+                    },
+                    {
+                      "type": "why",
+                      "description": "The kiosk cannot start selling if its cinema is missing or inactive.",
+                      "location": {
+                        "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-01-cinemas.spec.ts",
+                        "line": 11,
+                        "column": 5
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "api-call: GET content/cinemas",
+                      "contentType": "application/json",
+                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiTGlzdCBjaW5lbWFzIgogIH0sCiAgInJlcXVlc3QiOiB7CiAgICAibWV0aG9kIjogIkdFVCIsCiAgICAicGF0aCI6ICJjb250ZW50L2NpbmVtYXMiLAogICAgImhlYWRlcnMiOiB7CiAgICAgICJBY2NlcHQiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJwbGF0Zm9ybSI6ICJLSU9TSyIsCiAgICAgICJhcHB2ZXJzaW9uIjogIjEuMC4wIiwKICAgICAgIlgtS2lvc2stS2V5IjogIioqKiIKICAgIH0sCiAgICAiYm9keSI6IG51bGwKICB9LAogICJyZXNwb25zZSI6IHsKICAgICJzdGF0dXMiOiAyMDAsCiAgICAiZHVyYXRpb25NcyI6IDI3LAogICAgInNpemVCeXRlcyI6IDEyMDksCiAgICAiaGVhZGVycyI6IHsKICAgICAgInZhcnkiOiAiT3JpZ2luLCBBY2Nlc3MtQ29udHJvbC1SZXF1ZXN0LU1ldGhvZCwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1IZWFkZXJzIiwKICAgICAgImNvbnRlbnQtdHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgImNvbnRlbnQtbGVuZ3RoIjogIjEyMDkiLAogICAgICAiZGF0ZSI6ICJNb24sIDI4IFNlcCAyMDI2IDA3OjQ1OjI1IEdNVCIsCiAgICAgICJrZWVwLWFsaXZlIjogInRpbWVvdXQ9NjAiLAogICAgICAiY29ubmVjdGlvbiI6ICJrZWVwLWFsaXZlIgogICAgfSwKICAgICJjb2RlIjogMTAwMDEsCiAgICAicmVzdWx0IjogInN1Y2Nlc3MiLAogICAgIm1zZyI6ICIiLAogICAgImJvZHkiOiB7CiAgICAgICJjb2RlIjogMTAwMDEsCiAgICAgICJyZXN1bHQiOiAic3VjY2VzcyIsCiAgICAgICJtc2ciOiAiIiwKICAgICAgIm91dHB1dCI6IHsKICAgICAgICAiY2luZW1hcyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImlkIjogIjAwMDAwMDAwMDEiLAogICAgICAgICAgICAibmFtZSI6ICJDaW5lc2NhcGUgMzYwIiwKICAgICAgICAgICAgIm5hbWVBbHQiOiAi2LPZitmG2LPZg9mK2KggMzYwIiwKICAgICAgICAgICAgInBob25lTnVtYmVyIjogIiIsCiAgICAgICAgICAgICJlbWFpbEFkZHJlc3MiOiAiIiwKICAgICAgICAgICAgImFkZHJlc3MxIjogIjM2MCBNYWxsLCBaYWhyYSIsCiAgICAgICAgICAgICJhZGRyZXNzMiI6ICIiLAogICAgICAgICAgICAiYWRkcmVzczFBciI6ICLZhdmI2YQgMzYw2Iwg2KfZhNiy2YfYsdin2KEiLAogICAgICAgICAgICAiYWRkcmVzczJBciI6ICIiLAogICAgICAgICAgICAid29ya2luZ0hvdXJzIjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAid29ya2luZ0hvdXJzQWx0IjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAiZm9vZFN0YXJ0VGltZSI6ICIwODowMCIsCiAgICAgICAgICAgICJmb29kRW5kVGltZSI6ICIyMzozMCIsCiAgICAgICAgICAgICJmb29kRW5hYmxlIjogZmFsc2UsCiAgICAgICAgICAgICJjaXR5IjogIiIsCiAgICAgICAgICAgICJsYXRpdHVkZSI6ICIyOS4yNjc4IiwKICAgICAgICAgICAgImxvbmdpdHVkZSI6ICI0Ny45OTE5IiwKICAgICAgICAgICAgInBhcmtpbmdJbmZvIjogbnVsbCwKICAgICAgICAgICAgImxveWFsdHlDb2RlIjogbnVsbCwKICAgICAgICAgICAgImdpZnRTdG9yZSI6IGZhbHNlLAogICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiIiwKICAgICAgICAgICAgImRlc2NyaXB0aW9uQWx0IjogIiIsCiAgICAgICAgICAgICJjdXJyZW5jeUNvZGUiOiAiS1dEIiwKICAgICAgICAgICAgImFsbG93UHJpbnRBdEhvbWVCb29raW5ncyI6IGZhbHNlLAogICAgICAgICAgICAiYWxsb3dPbmxpbmVWb3VjaGVyVmFsaWRhdGlvbiI6IGZhbHNlLAogICAgICAgICAgICAiZGlzcGxheVNvZmFTZWF0cyI6IGZhbHNlLAogICAgICAgICAgICAidGltZVpvbmVJZCI6IG51bGwsCiAgICAgICAgICAgICJhbGVydHR4dCI6ICIiLAogICAgICAgICAgICAiaWNvbiI6ICIiLAogICAgICAgICAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICAgICAgICAgImZvb2QiOiB0cnVlLAogICAgICAgICAgICAiZm9vZFByZXBhcmUiOiB0cnVlLAogICAgICAgICAgICAicHJlcGFyZU5vdyI6IHRydWUsCiAgICAgICAgICAgICJwcmVwYXJlTGF0ZXIiOiB0cnVlLAogICAgICAgICAgICAid2ViVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL3dlYl9zbWFsbC8wMDAwMDAwMDAxLmpwZz92PTkzNyIsCiAgICAgICAgICAgICJ3ZWJJbWFnZVVybCI6ICIiLAogICAgICAgICAgICAiYXBwVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9zbWFsbC8wMDAwMDAwMDAxLmpwZyIsCiAgICAgICAgICAgICJhcHBJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9iaWcvMDAwMDAwMDAwMS5qcGciLAogICAgICAgICAgICAicHJpb3JpdHkiOiAyLAogICAgICAgICAgICAiZXhwZXJpZW5jZXMiOiBbXSwKICAgICAgICAgICAgImV4cHMiOiBbCiAgICAgICAgICAgICAgIlZJUCIsCiAgICAgICAgICAgICAgIklNQVgiLAogICAgICAgICAgICAgICI0RFgiLAogICAgICAgICAgICAgICJET0xCWSIsCiAgICAgICAgICAgICAgIlNDUkVFTlgiCiAgICAgICAgICAgIF0KICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICB9Cn0="
+                    },
+                    {
+                      "name": "checks",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJsYWJlbCI6ICJIVFRQIHN0YXR1cyBvZiBjb250ZW50L2NpbmVtYXMiLAogICAgImV4cGVjdGVkIjogIjIwMCIsCiAgICAiYWN0dWFsIjogIjIwMCIsCiAgICAicGFzc2VkIjogdHJ1ZQogIH0sCiAgewogICAgImxhYmVsIjogIlJlc3BvbnNlIGNvZGUiLAogICAgImV4cGVjdGVkIjogIjEwMDAxIiwKICAgICJhY3R1YWwiOiAiMTAwMDEiLAogICAgInBhc3NlZCI6IHRydWUKICB9LAogIHsKICAgICJsYWJlbCI6ICJOdW1iZXIgb2YgY2luZW1hcyIsCiAgICAiZXhwZWN0ZWQiOiAiPiAwIiwKICAgICJhY3R1YWwiOiAiMSIsCiAgICAicGFzc2VkIjogdHJ1ZQogIH0sCiAgewogICAgImxhYmVsIjogIkNpbmVtYSAwMDAwMDAwMDAxIGlzIGluIHRoZSBsaXN0IiwKICAgICJleHBlY3RlZCI6ICJwcmVzZW50IiwKICAgICJhY3R1YWwiOiAiW1wiMDAwMDAwMDAwMVwiXSIsCiAgICAicGFzc2VkIjogdHJ1ZQogIH0sCiAgewogICAgImxhYmVsIjogIkNpbmVtYSBpcyBhY3RpdmUiLAogICAgImV4cGVjdGVkIjogInRydWUiLAogICAgImFjdHVhbCI6ICJ0cnVlIiwKICAgICJwYXNzZWQiOiB0cnVlCiAgfSwKICB7CiAgICAibGFiZWwiOiAiQ3VycmVuY3kiLAogICAgImV4cGVjdGVkIjogIlwiS1dEXCIiLAogICAgImFjdHVhbCI6ICJcIktXRFwiIiwKICAgICJwYXNzZWQiOiB0cnVlCiAgfSwKICB7CiAgICAibGFiZWwiOiAiQ2luZW1hIGhhcyBhIG5hbWUiLAogICAgImV4cGVjdGVkIjogIm5vbi1lbXB0eSIsCiAgICAiYWN0dWFsIjogIlwiQ2luZXNjYXBlIDM2MFwiIiwKICAgICJwYXNzZWQiOiB0cnVlCiAgfQpd"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "3aaf9688a1fcac614c54-508fe41602253aaddf43",
+          "file": "api-01-cinemas.spec.ts",
+          "line": 11,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-09-28T07:45:25.112Z",
+    "duration": 451.852,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}
