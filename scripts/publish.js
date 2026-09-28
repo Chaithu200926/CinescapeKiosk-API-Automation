@@ -19,6 +19,8 @@ const message = process.argv.slice(2).join(' ').trim();
 const trailer = process.env.COMMIT_TRAILER ? `\n\n${process.env.COMMIT_TRAILER}` : '';
 
 const sh = (cmd) => execSync(cmd, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
+// Pass the message on stdin so multi-line messages survive on every shell.
+const commit = (msg) => execSync('git commit -q -F -', { cwd: root, input: msg, stdio: ['pipe', 'pipe', 'pipe'] });
 const step = (text) => console.log(`\n▶ ${text}`);
 
 // Safety: never publish secrets.
@@ -31,14 +33,14 @@ if (/(^|\n)\.env$/m.test(tracked)) {
 step('Committing code changes');
 sh('git add -A -- . ":(exclude)reports"');
 if (sh('git diff --cached --name-only')) {
-  sh(`git commit -q -m ${JSON.stringify((message || 'Update tests') + trailer)}`);
+  commit((message || 'Update tests') + trailer);
   console.log(`  committed: ${sh('git log -1 --pretty="%h %s"')}`);
 } else {
   console.log('  no code changes');
 }
 
 step('Running API tests');
-const testRun = spawnSync('npx', ['playwright', 'test'], { cwd: root, stdio: 'inherit', shell: true });
+const testRun = spawnSync('npx playwright test', { cwd: root, stdio: 'inherit', shell: true });
 if (!fs.existsSync(path.join(root, 'test-results', 'results.json'))) {
   console.error('No results.json produced. Aborting publish.');
   process.exit(1);
@@ -61,7 +63,7 @@ const s = results.stats || {};
 const total = (s.expected || 0) + (s.unexpected || 0) + (s.skipped || 0) + (s.flaky || 0);
 const summary = `${s.expected || 0}/${total} passed${s.unexpected ? `, ${s.unexpected} failed` : ''}`;
 sh('git add reports');
-sh(`git commit -q -m ${JSON.stringify(`Test results: ${summary}` + trailer)}`);
+commit(`Test results: ${summary}` + trailer);
 execSync('git push -q origin HEAD:main', { cwd: root, stdio: 'inherit' });
 
 const remote = sh('git remote get-url origin');
