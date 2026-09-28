@@ -1,0 +1,75 @@
+// Run the suite on this PC (which can reach the kiosk API) and publish the results to GitHub.
+//
+//   npm run publish-results -- "Add API-05 food menu test"
+//
+// 1. Commits any code/test changes (everything except reports/) with the given message.
+// 2. Runs all tests. Test failures do not stop publishing; they are reported.
+// 3. Builds the dashboard into reports/ (index.html, history.json, summary.md, results.json, playwright-report/).
+// 4. Commits reports/ and pushes to origin/main. The "Publish test dashboard" workflow then
+//    deploys reports/ to GitHub Pages and shows summary.md on the Actions run page.
+const fs = require('fs');
+const path = require('path');
+const { execSync, spawnSync } = require('child_process');
+
+const root = path.join(__dirname, '..');
+const reportDir = path.join(root, 'reports');
+const message = process.argv.slice(2).join(' ').trim();
+
+// Optional trailer lines (e.g. "Co-Authored-By: ...") appended to both commits.
+const trailer = process.env.COMMIT_TRAILER ? `\n\n${process.env.COMMIT_TRAILER}` : '';
+
+const sh = (cmd) => execSync(cmd, { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] }).toString().trim();
+const step = (text) => console.log(`\n▶ ${text}`);
+
+// Safety: never publish secrets.
+const tracked = sh('git ls-files');
+if (/(^|\n)\.env$/m.test(tracked)) {
+  console.error('.env is tracked by git. Remove it from the index before publishing.');
+  process.exit(1);
+}
+
+step('Committing code changes');
+sh('git add -A -- . ":(exclude)reports"');
+if (sh('git diff --cached --name-only')) {
+  sh(`git commit -q -m ${JSON.stringify((message || 'Update tests') + trailer)}`);
+  console.log(`  committed: ${sh('git log -1 --pretty="%h %s"')}`);
+} else {
+  console.log('  no code changes');
+}
+
+step('Running API tests');
+const testRun = spawnSync('npx', ['playwright', 'test'], { cwd: root, stdio: 'inherit', shell: true });
+if (!fs.existsSync(path.join(root, 'test-results', 'results.json'))) {
+  console.error('No results.json produced. Aborting publish.');
+  process.exit(1);
+}
+
+step('Building dashboard in reports/');
+fs.rmSync(path.join(reportDir, 'playwright-report'), { recursive: true, force: true });
+fs.mkdirSync(reportDir, { recursive: true });
+fs.cpSync(path.join(root, 'playwright-report'), path.join(reportDir, 'playwright-report'), { recursive: true });
+fs.copyFileSync(path.join(root, 'test-results', 'results.json'), path.join(reportDir, 'results.json'));
+execSync('node scripts/generate-dashboard.js', {
+  cwd: root,
+  stdio: 'inherit',
+  env: { ...process.env, REPORT_DIR: 'reports', KIOSK_TRIGGER: 'published from QA PC' },
+});
+
+step('Committing and pushing results');
+const results = JSON.parse(fs.readFileSync(path.join(reportDir, 'results.json'), 'utf8'));
+const s = results.stats || {};
+const total = (s.expected || 0) + (s.unexpected || 0) + (s.skipped || 0) + (s.flaky || 0);
+const summary = `${s.expected || 0}/${total} passed${s.unexpected ? `, ${s.unexpected} failed` : ''}`;
+sh('git add reports');
+sh(`git commit -q -m ${JSON.stringify(`Test results: ${summary}` + trailer)}`);
+execSync('git push -q origin HEAD:main', { cwd: root, stdio: 'inherit' });
+
+const remote = sh('git remote get-url origin');
+const slug = (remote.match(/github\.com[/:]([^/]+\/[^/.]+)/) || [])[1];
+console.log(`\n✔ Published: ${summary}`);
+if (slug) {
+  console.log(`  Actions:   https://github.com/${slug}/actions`);
+  console.log(`  Dashboard: https://${slug.split('/')[0].toLowerCase()}.github.io/${slug.split('/')[1]}/  (updates in ~1 minute)`);
+}
+// Test failures are reported on the dashboard and the Actions run, not as a publish error.
+if (testRun.status !== 0) console.log('  Note: some tests failed. See the dashboard for details.');

@@ -1,0 +1,78 @@
+name: Kiosk API tests (self-hosted runner)
+
+# Runs the tests on GitHub Actions using a self-hosted runner inside the office network.
+# CURRENTLY MANUAL ONLY: Windows Device Guard on the QA PC blocks the runner. Until IT allows
+# C:\actions-runner\bin\Runner.Listener.exe, use `npm run publish-results` instead (see README).
+# To switch to automatic runs once the runner works, add:
+#   push:
+#     branches: [main]
+#     paths-ignore: ['reports/**']
+# There is deliberately no pull_request trigger: this repo is public and the runner is internal.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    # KIOSK_API_BASE_URL / KIOSK_API_KEY / KIOSK_CINEMA_ID / KIOSK_HISTORY_FILE come from the runner's own .env file.
+    runs-on: [self-hosted, windows, kiosk-api]
+    defaults:
+      run:
+        shell: powershell
+    env:
+      REPORT_DIR: site
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npx playwright test
+
+      - name: Build dashboard and job summary
+        if: always()
+        run: |
+          New-Item -ItemType Directory -Force site | Out-Null
+          if (Test-Path playwright-report) { Copy-Item playwright-report site\playwright-report -Recurse -Force }
+          npm run dashboard
+
+      - name: Upload dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kiosk-api-dashboard
+          path: site
+          if-no-files-found: warn
+
+  publish:
+    needs: test
+    if: always() && needs.test.result != 'cancelled'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Download dashboard
+        uses: actions/download-artifact@v4
+        with:
+          name: kiosk-api-dashboard
+          path: site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
