@@ -10,9 +10,6 @@
 # There is deliberately no pull_request trigger: the repo is public and the runner would be internal.
 name: KIOSK API Testing
 
-# Title shown for each run in the Actions list.
-run-name: KIOSK API Testing · ${{ github.event_name == 'push' && github.event.head_commit.message || 'manual run' }}
-
 on:
   # Start when new test results are pushed to main.
   push:
