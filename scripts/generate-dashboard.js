@@ -109,11 +109,13 @@ const pkgVersion = (name) => {
 const maskHost = (url) => {
   try {
     const u = new URL(url);
-    return `${u.protocol}//<hidden>${u.port ? ':' + u.port : ''}${u.pathname}`;
+    return `${u.protocol}//<kiosk-api-host>${u.port ? ':' + u.port : ''}${u.pathname}`;
   } catch {
     return 'not set';
   }
 };
+// Full address of one API call, with the host hidden. Older results have no `url`, so rebuild it from base + path.
+const fullUrl = (req) => req.url || `${maskHost(process.env.KIOSK_API_BASE_URL).replace(/\/?$/, '/')}${req.path}`;
 
 // "https://github.com/owner/repo(.git)" from the origin remote, or from Actions env vars.
 const repoSlug =
@@ -229,13 +231,13 @@ function trendChart() {
   <div class="legend"><span><i class="sw pass"></i>Passed</span><span><i class="sw fail"></i>Failed</span><span><i class="sw skip"></i>Skipped</span><span class="muted">Hover a column for details · x-axis: run number</span></div>`;
 }
 
-// One API call: method, path, HTTP status, response message, headers and bodies.
+// One API call: method, full URL, HTTP status, response message, headers and bodies.
 function callHtml(c) {
   const ok = c.response.status >= 200 && c.response.status < 300;
   return `<div class="call">
     <div class="call-head">
       <span class="method">${esc(c.request.method)}</span>
-      <code class="path">${esc(c.request.path)}</code>
+      <code class="path">${esc(fullUrl(c.request))}</code>
       <span class="pill ${ok ? 'pass' : 'fail'}">HTTP ${esc(c.response.status)}</span>
       <span class="muted">${esc(c.response.durationMs)} ms · ${esc(c.response.sizeBytes ?? '?')} bytes</span>
     </div>
@@ -417,7 +419,7 @@ footer { color:var(--muted); font-size:13px; margin-top:24px; }
 
 <h2>Test details</h2>
 ${testCards || '<p>No tests found.</p>'}
-<footer>Generated from Playwright JSON results. The kiosk API key, cookies and API host are hidden. All calls pass the read-only allowlist.</footer>
+<footer>Generated from Playwright JSON results. The kiosk API key, cookies and API server host are hidden. All calls pass the read-only allowlist.</footer>
 </main>
 <div class="tip" id="tip"></div>
 <script>
@@ -467,7 +469,7 @@ console.log(`Dashboard: ${path.join(outputDir, 'index.html')} (${passed}/${total
     const calls = t.calls.length ? t.calls : [null];
     calls.forEach((c, i) => {
       lines.push(
-        `| ${i === 0 ? md(t.title) : ''} | ${i === 0 ? `${emoji[kind(t.status)]} ${label(t.status)}` : ''} | ${i === 0 ? trail(t.id) : ''} | ${c ? `\`${md(c.request.method)} ${md(c.request.path)}\`` : ''} | ${c ? c.response.status : ''} | ${c ? md(c.response.code) : ''} | ${c ? md(c.response.msg || '(empty)') : ''} |`,
+        `| ${i === 0 ? md(t.title) : ''} | ${i === 0 ? `${emoji[kind(t.status)]} ${label(t.status)}` : ''} | ${i === 0 ? trail(t.id) : ''} | ${c ? `\`${md(c.request.method)} ${md(fullUrl(c.request))}\`` : ''} | ${c ? c.response.status : ''} | ${c ? md(c.response.code) : ''} | ${c ? md(c.response.msg || '(empty)') : ''} |`,
       );
     });
   }

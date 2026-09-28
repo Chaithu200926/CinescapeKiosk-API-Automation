@@ -1,6 +1,6 @@
 // API client used by every test: sends the request, parses the answer and records it for the report.
-import { APIRequestContext, TestInfo, test } from '@playwright/test';
-import { config, kioskHeaders } from './config';
+import { APIRequestContext, APIResponse, TestInfo, test } from '@playwright/test';
+import { config, displayBaseURL, kioskHeaders } from './config';
 import { assertReadOnly } from './safety';
 
 /** Every kiosk API answer is wrapped in this envelope. */
@@ -68,12 +68,20 @@ export class KioskApi {
 
       // Send the request and time it. failOnStatusCode:false lets tests check 401/403 answers.
       const started = Date.now();
-      const response = await this.request.fetch(config.baseURL + path, {
-        method,
-        headers: options.body !== undefined ? { ...headers, 'Content-Type': 'application/json' } : headers,
-        data: options.body,
-        failOnStatusCode: false,
-      });
+      let response: APIResponse;
+      try {
+        response = await this.request.fetch(config.baseURL + path, {
+          method,
+          headers: options.body !== undefined ? { ...headers, 'Content-Type': 'application/json' } : headers,
+          data: options.body,
+          failOnStatusCode: false,
+        });
+      } catch (error) {
+        // Network errors (e.g. server down) name the server address; hide it, because reports are public.
+        const host = new URL(config.baseURL).hostname;
+        const first = String((error as Error).message).split('\n')[0];
+        throw new Error(`${method} ${displayBaseURL + path} failed: ${first.split(host).join('<kiosk-api-host>')}`);
+      }
       const durationMs = Date.now() - started;
       const rawText = await response.text();
 
@@ -111,7 +119,8 @@ export class KioskApi {
     // Everything the dashboard shows about this call.
     const record = {
       safety: { readOnly: true, purpose: extra.purpose },
-      request: { method: res.method, path: res.path, headers: requestHeaders, body: extra.requestBody ?? null },
+      // url = the full address that was called (API base + path), with the server host hidden.
+      request: { method: res.method, path: res.path, url: displayBaseURL + res.path, headers: requestHeaders, body: extra.requestBody ?? null },
       response: {
         status: res.status,
         durationMs: res.durationMs,
@@ -129,7 +138,7 @@ export class KioskApi {
       contentType: 'application/json',
     });
     // Also print a one-line summary in the terminal.
-    console.log(`${res.method} ${res.path} -> HTTP ${res.status} | code=${res.body.code} result=${res.body.result} msg="${res.body.msg}" (${res.durationMs} ms)`);
+    console.log(`${res.method} ${displayBaseURL + res.path} -> HTTP ${res.status} | code=${res.body.code} result=${res.body.result} msg="${res.body.msg}" (${res.durationMs} ms)`);
   }
 }
 

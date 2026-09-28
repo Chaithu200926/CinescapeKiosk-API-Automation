@@ -26,6 +26,12 @@ export const config = {
   appVersion: process.env.KIOSK_APP_VERSION || '1.0.0',
 };
 
+/** API base address for reports: same as baseURL but with the server host hidden (reports are public). */
+export const displayBaseURL = (() => {
+  const u = new URL(config.baseURL);
+  return `${u.protocol}//<kiosk-api-host>${u.port ? ':' + u.port : ''}${u.pathname}`;
+})();
+
 /** Headers the CinescapeKiosk app sends on every API call. */
 export function kioskHeaders(overrides: Record<string, string | undefined> = {}): Record<string, string> {
   // Start from the kiosk's standard headers, then apply the test's overrides.
