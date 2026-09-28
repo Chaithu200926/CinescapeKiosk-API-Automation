@@ -112,11 +112,11 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "passed",
-                  "duration": 43,
+                  "duration": 45,
                   "errors": [],
                   "stdout": [
                     {
-                      "text": "GET content/cinemas -> HTTP 200 | code=10001 result=success msg=\"\" (25 ms)\n"
+                      "text": "GET content/cinemas -> HTTP 200 | code=10001 result=success msg=\"\" (30 ms)\n"
                     }
                   ],
                   "stderr": [],
@@ -124,7 +124,7 @@
                   "steps": [
                     {
                       "title": "GET content/cinemas",
-                      "duration": 29
+                      "duration": 32
                     },
                     {
                       "title": "Verify response is successful",
@@ -135,7 +135,7 @@
                       "duration": 1
                     }
                   ],
-                  "startTime": "2026-09-28T07:47:35.281Z",
+                  "startTime": "2026-09-28T07:48:08.770Z",
                   "annotations": [
                     {
                       "type": "purpose",
@@ -160,7 +160,7 @@
                     {
                       "name": "api-call: GET content/cinemas",
                       "contentType": "application/json",
-                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiTGlzdCBjaW5lbWFzIgogIH0sCiAgInJlcXVlc3QiOiB7CiAgICAibWV0aG9kIjogIkdFVCIsCiAgICAicGF0aCI6ICJjb250ZW50L2NpbmVtYXMiLAogICAgImhlYWRlcnMiOiB7CiAgICAgICJBY2NlcHQiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJwbGF0Zm9ybSI6ICJLSU9TSyIsCiAgICAgICJhcHB2ZXJzaW9uIjogIjEuMC4wIiwKICAgICAgIlgtS2lvc2stS2V5IjogIioqKiIKICAgIH0sCiAgICAiYm9keSI6IG51bGwKICB9LAogICJyZXNwb25zZSI6IHsKICAgICJzdGF0dXMiOiAyMDAsCiAgICAiZHVyYXRpb25NcyI6IDI1LAogICAgInNpemVCeXRlcyI6IDEyMDksCiAgICAiaGVhZGVycyI6IHsKICAgICAgInZhcnkiOiAiT3JpZ2luLCBBY2Nlc3MtQ29udHJvbC1SZXF1ZXN0LU1ldGhvZCwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1IZWFkZXJzIiwKICAgICAgImNvbnRlbnQtdHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgImNvbnRlbnQtbGVuZ3RoIjogIjEyMDkiLAogICAgICAiZGF0ZSI6ICJNb24sIDI4IFNlcCAyMDI2IDA3OjQ3OjM1IEdNVCIsCiAgICAgICJrZWVwLWFsaXZlIjogInRpbWVvdXQ9NjAiLAogICAgICAiY29ubmVjdGlvbiI6ICJrZWVwLWFsaXZlIgogICAgfSwKICAgICJjb2RlIjogMTAwMDEsCiAgICAicmVzdWx0IjogInN1Y2Nlc3MiLAogICAgIm1zZyI6ICIiLAogICAgImJvZHkiOiB7CiAgICAgICJjb2RlIjogMTAwMDEsCiAgICAgICJyZXN1bHQiOiAic3VjY2VzcyIsCiAgICAgICJtc2ciOiAiIiwKICAgICAgIm91dHB1dCI6IHsKICAgICAgICAiY2luZW1hcyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImlkIjogIjAwMDAwMDAwMDEiLAogICAgICAgICAgICAibmFtZSI6ICJDaW5lc2NhcGUgMzYwIiwKICAgICAgICAgICAgIm5hbWVBbHQiOiAi2LPZitmG2LPZg9mK2KggMzYwIiwKICAgICAgICAgICAgInBob25lTnVtYmVyIjogIiIsCiAgICAgICAgICAgICJlbWFpbEFkZHJlc3MiOiAiIiwKICAgICAgICAgICAgImFkZHJlc3MxIjogIjM2MCBNYWxsLCBaYWhyYSIsCiAgICAgICAgICAgICJhZGRyZXNzMiI6ICIiLAogICAgICAgICAgICAiYWRkcmVzczFBciI6ICLZhdmI2YQgMzYw2Iwg2KfZhNiy2YfYsdin2KEiLAogICAgICAgICAgICAiYWRkcmVzczJBciI6ICIiLAogICAgICAgICAgICAid29ya2luZ0hvdXJzIjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAid29ya2luZ0hvdXJzQWx0IjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAiZm9vZFN0YXJ0VGltZSI6ICIwODowMCIsCiAgICAgICAgICAgICJmb29kRW5kVGltZSI6ICIyMzozMCIsCiAgICAgICAgICAgICJmb29kRW5hYmxlIjogZmFsc2UsCiAgICAgICAgICAgICJjaXR5IjogIiIsCiAgICAgICAgICAgICJsYXRpdHVkZSI6ICIyOS4yNjc4IiwKICAgICAgICAgICAgImxvbmdpdHVkZSI6ICI0Ny45OTE5IiwKICAgICAgICAgICAgInBhcmtpbmdJbmZvIjogbnVsbCwKICAgICAgICAgICAgImxveWFsdHlDb2RlIjogbnVsbCwKICAgICAgICAgICAgImdpZnRTdG9yZSI6IGZhbHNlLAogICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiIiwKICAgICAgICAgICAgImRlc2NyaXB0aW9uQWx0IjogIiIsCiAgICAgICAgICAgICJjdXJyZW5jeUNvZGUiOiAiS1dEIiwKICAgICAgICAgICAgImFsbG93UHJpbnRBdEhvbWVCb29raW5ncyI6IGZhbHNlLAogICAgICAgICAgICAiYWxsb3dPbmxpbmVWb3VjaGVyVmFsaWRhdGlvbiI6IGZhbHNlLAogICAgICAgICAgICAiZGlzcGxheVNvZmFTZWF0cyI6IGZhbHNlLAogICAgICAgICAgICAidGltZVpvbmVJZCI6IG51bGwsCiAgICAgICAgICAgICJhbGVydHR4dCI6ICIiLAogICAgICAgICAgICAiaWNvbiI6ICIiLAogICAgICAgICAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICAgICAgICAgImZvb2QiOiB0cnVlLAogICAgICAgICAgICAiZm9vZFByZXBhcmUiOiB0cnVlLAogICAgICAgICAgICAicHJlcGFyZU5vdyI6IHRydWUsCiAgICAgICAgICAgICJwcmVwYXJlTGF0ZXIiOiB0cnVlLAogICAgICAgICAgICAid2ViVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL3dlYl9zbWFsbC8wMDAwMDAwMDAxLmpwZz92PTkzNyIsCiAgICAgICAgICAgICJ3ZWJJbWFnZVVybCI6ICIiLAogICAgICAgICAgICAiYXBwVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9zbWFsbC8wMDAwMDAwMDAxLmpwZyIsCiAgICAgICAgICAgICJhcHBJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9iaWcvMDAwMDAwMDAwMS5qcGciLAogICAgICAgICAgICAicHJpb3JpdHkiOiAyLAogICAgICAgICAgICAiZXhwZXJpZW5jZXMiOiBbXSwKICAgICAgICAgICAgImV4cHMiOiBbCiAgICAgICAgICAgICAgIlZJUCIsCiAgICAgICAgICAgICAgIklNQVgiLAogICAgICAgICAgICAgICI0RFgiLAogICAgICAgICAgICAgICJET0xCWSIsCiAgICAgICAgICAgICAgIlNDUkVFTlgiCiAgICAgICAgICAgIF0KICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICB9Cn0="
+                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiTGlzdCBjaW5lbWFzIgogIH0sCiAgInJlcXVlc3QiOiB7CiAgICAibWV0aG9kIjogIkdFVCIsCiAgICAicGF0aCI6ICJjb250ZW50L2NpbmVtYXMiLAogICAgImhlYWRlcnMiOiB7CiAgICAgICJBY2NlcHQiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJwbGF0Zm9ybSI6ICJLSU9TSyIsCiAgICAgICJhcHB2ZXJzaW9uIjogIjEuMC4wIiwKICAgICAgIlgtS2lvc2stS2V5IjogIioqKiIKICAgIH0sCiAgICAiYm9keSI6IG51bGwKICB9LAogICJyZXNwb25zZSI6IHsKICAgICJzdGF0dXMiOiAyMDAsCiAgICAiZHVyYXRpb25NcyI6IDMwLAogICAgInNpemVCeXRlcyI6IDEyMDksCiAgICAiaGVhZGVycyI6IHsKICAgICAgInZhcnkiOiAiT3JpZ2luLCBBY2Nlc3MtQ29udHJvbC1SZXF1ZXN0LU1ldGhvZCwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1IZWFkZXJzIiwKICAgICAgImNvbnRlbnQtdHlwZSI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgImNvbnRlbnQtbGVuZ3RoIjogIjEyMDkiLAogICAgICAiZGF0ZSI6ICJNb24sIDI4IFNlcCAyMDI2IDA3OjQ4OjA4IEdNVCIsCiAgICAgICJrZWVwLWFsaXZlIjogInRpbWVvdXQ9NjAiLAogICAgICAiY29ubmVjdGlvbiI6ICJrZWVwLWFsaXZlIgogICAgfSwKICAgICJjb2RlIjogMTAwMDEsCiAgICAicmVzdWx0IjogInN1Y2Nlc3MiLAogICAgIm1zZyI6ICIiLAogICAgImJvZHkiOiB7CiAgICAgICJjb2RlIjogMTAwMDEsCiAgICAgICJyZXN1bHQiOiAic3VjY2VzcyIsCiAgICAgICJtc2ciOiAiIiwKICAgICAgIm91dHB1dCI6IHsKICAgICAgICAiY2luZW1hcyI6IFsKICAgICAgICAgIHsKICAgICAgICAgICAgImlkIjogIjAwMDAwMDAwMDEiLAogICAgICAgICAgICAibmFtZSI6ICJDaW5lc2NhcGUgMzYwIiwKICAgICAgICAgICAgIm5hbWVBbHQiOiAi2LPZitmG2LPZg9mK2KggMzYwIiwKICAgICAgICAgICAgInBob25lTnVtYmVyIjogIiIsCiAgICAgICAgICAgICJlbWFpbEFkZHJlc3MiOiAiIiwKICAgICAgICAgICAgImFkZHJlc3MxIjogIjM2MCBNYWxsLCBaYWhyYSIsCiAgICAgICAgICAgICJhZGRyZXNzMiI6ICIiLAogICAgICAgICAgICAiYWRkcmVzczFBciI6ICLZhdmI2YQgMzYw2Iwg2KfZhNiy2YfYsdin2KEiLAogICAgICAgICAgICAiYWRkcmVzczJBciI6ICIiLAogICAgICAgICAgICAid29ya2luZ0hvdXJzIjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAid29ya2luZ0hvdXJzQWx0IjogIjA4IEFNIC0gMTAgQU0iLAogICAgICAgICAgICAiZm9vZFN0YXJ0VGltZSI6ICIwODowMCIsCiAgICAgICAgICAgICJmb29kRW5kVGltZSI6ICIyMzozMCIsCiAgICAgICAgICAgICJmb29kRW5hYmxlIjogZmFsc2UsCiAgICAgICAgICAgICJjaXR5IjogIiIsCiAgICAgICAgICAgICJsYXRpdHVkZSI6ICIyOS4yNjc4IiwKICAgICAgICAgICAgImxvbmdpdHVkZSI6ICI0Ny45OTE5IiwKICAgICAgICAgICAgInBhcmtpbmdJbmZvIjogbnVsbCwKICAgICAgICAgICAgImxveWFsdHlDb2RlIjogbnVsbCwKICAgICAgICAgICAgImdpZnRTdG9yZSI6IGZhbHNlLAogICAgICAgICAgICAiZGVzY3JpcHRpb24iOiAiIiwKICAgICAgICAgICAgImRlc2NyaXB0aW9uQWx0IjogIiIsCiAgICAgICAgICAgICJjdXJyZW5jeUNvZGUiOiAiS1dEIiwKICAgICAgICAgICAgImFsbG93UHJpbnRBdEhvbWVCb29raW5ncyI6IGZhbHNlLAogICAgICAgICAgICAiYWxsb3dPbmxpbmVWb3VjaGVyVmFsaWRhdGlvbiI6IGZhbHNlLAogICAgICAgICAgICAiZGlzcGxheVNvZmFTZWF0cyI6IGZhbHNlLAogICAgICAgICAgICAidGltZVpvbmVJZCI6IG51bGwsCiAgICAgICAgICAgICJhbGVydHR4dCI6ICIiLAogICAgICAgICAgICAiaWNvbiI6ICIiLAogICAgICAgICAgICAiYWN0aXZlIjogdHJ1ZSwKICAgICAgICAgICAgImZvb2QiOiB0cnVlLAogICAgICAgICAgICAiZm9vZFByZXBhcmUiOiB0cnVlLAogICAgICAgICAgICAicHJlcGFyZU5vdyI6IHRydWUsCiAgICAgICAgICAgICJwcmVwYXJlTGF0ZXIiOiB0cnVlLAogICAgICAgICAgICAid2ViVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL3dlYl9zbWFsbC8wMDAwMDAwMDAxLmpwZz92PTkzNyIsCiAgICAgICAgICAgICJ3ZWJJbWFnZVVybCI6ICIiLAogICAgICAgICAgICAiYXBwVGh1bWJJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9zbWFsbC8wMDAwMDAwMDAxLmpwZyIsCiAgICAgICAgICAgICJhcHBJbWFnZVVybCI6ICJodHRwczovL2NpbmVzY2FwZS10ZXN0LWFwcC5zMy5ldS1ub3J0aC0xLmFtYXpvbmF3cy5jb20vY2luZW1hL21vYl9iaWcvMDAwMDAwMDAwMS5qcGciLAogICAgICAgICAgICAicHJpb3JpdHkiOiAyLAogICAgICAgICAgICAiZXhwZXJpZW5jZXMiOiBbXSwKICAgICAgICAgICAgImV4cHMiOiBbCiAgICAgICAgICAgICAgIlZJUCIsCiAgICAgICAgICAgICAgIklNQVgiLAogICAgICAgICAgICAgICI0RFgiLAogICAgICAgICAgICAgICJET0xCWSIsCiAgICAgICAgICAgICAgIlNDUkVFTlgiCiAgICAgICAgICAgIF0KICAgICAgICAgIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICB9Cn0="
                     },
                     {
                       "name": "checks",
@@ -221,7 +221,7 @@
                   "workerIndex": 0,
                   "parallelIndex": 0,
                   "status": "failed",
-                  "duration": 25,
+                  "duration": 30,
                   "error": {
                     "message": "Error: Response code\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\nExpected: \u001b[32m10001\u001b[39m\nReceived: \u001b[31m12002\u001b[39m",
                     "stack": "Error: Response code\n\n\u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoEqual\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // deep equality\u001b[22m\n\nExpected: \u001b[32m10001\u001b[39m\nReceived: \u001b[31m12002\u001b[39m\n    at assertion (C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\src\\checks.ts:28:73)\n    at Verify.run (C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\src\\checks.ts:62:7)\n    at Verify.equal (C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\src\\checks.ts:28:10)\n    at Verify.success (C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\src\\checks.ts:50:10)\n    at C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-02-sessions.spec.ts:22:14\n    at C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-02-sessions.spec.ts:21:5",
@@ -244,7 +244,7 @@
                   ],
                   "stdout": [
                     {
-                      "text": "POST content/csessions -> HTTP 200 | code=12002 result=error msg=\"Something went wrong!\" (16 ms)\n"
+                      "text": "POST content/csessions -> HTTP 200 | code=12002 result=error msg=\"Something went wrong!\" (20 ms)\n"
                     }
                   ],
                   "stderr": [],
@@ -252,7 +252,7 @@
                   "steps": [
                     {
                       "title": "POST content/csessions",
-                      "duration": 19
+                      "duration": 26
                     },
                     {
                       "title": "Verify response is successful",
@@ -269,7 +269,7 @@
                       }
                     }
                   ],
-                  "startTime": "2026-09-28T07:47:35.354Z",
+                  "startTime": "2026-09-28T07:48:08.845Z",
                   "annotations": [
                     {
                       "type": "purpose",
@@ -294,7 +294,7 @@
                     {
                       "name": "api-call: POST content/csessions",
                       "contentType": "application/json",
-                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiR2V0IHByb2dyYW1tZSAobG9va3VwOyBQT1NUIGNhcnJpZXMgZmlsdGVycykiCiAgfSwKICAicmVxdWVzdCI6IHsKICAgICJtZXRob2QiOiAiUE9TVCIsCiAgICAicGF0aCI6ICJjb250ZW50L2NzZXNzaW9ucyIsCiAgICAiaGVhZGVycyI6IHsKICAgICAgIkFjY2VwdCI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgInBsYXRmb3JtIjogIktJT1NLIiwKICAgICAgImFwcHZlcnNpb24iOiAiMS4wLjAiLAogICAgICAiWC1LaW9zay1LZXkiOiAiKioqIgogICAgfSwKICAgICJib2R5IjogewogICAgICAiY2luZW1hSWQiOiAiMDAwMDAwMDAwMSIsCiAgICAgICJkYXRlZCI6ICIyMDI2LTA5LTI4IiwKICAgICAgImV4cGVyaWVuY2UiOiAiIiwKICAgICAgImxhbmd1YWdlIjogIiIsCiAgICAgICJyYXRpbmciOiAiIiwKICAgICAgImdlbnJlIjogIiIKICAgIH0KICB9LAogICJyZXNwb25zZSI6IHsKICAgICJzdGF0dXMiOiAyMDAsCiAgICAiZHVyYXRpb25NcyI6IDE2LAogICAgInNpemVCeXRlcyI6IDc1LAogICAgImhlYWRlcnMiOiB7CiAgICAgICJ2YXJ5IjogIk9yaWdpbiwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1NZXRob2QsIEFjY2Vzcy1Db250cm9sLVJlcXVlc3QtSGVhZGVycyIsCiAgICAgICJjb250ZW50LXR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJjb250ZW50LWxlbmd0aCI6ICI3NSIsCiAgICAgICJkYXRlIjogIk1vbiwgMjggU2VwIDIwMjYgMDc6NDc6MzUgR01UIiwKICAgICAgImtlZXAtYWxpdmUiOiAidGltZW91dD02MCIsCiAgICAgICJjb25uZWN0aW9uIjogImtlZXAtYWxpdmUiCiAgICB9LAogICAgImNvZGUiOiAxMjAwMiwKICAgICJyZXN1bHQiOiAiZXJyb3IiLAogICAgIm1zZyI6ICJTb21ldGhpbmcgd2VudCB3cm9uZyEiLAogICAgImJvZHkiOiB7CiAgICAgICJjb2RlIjogMTIwMDIsCiAgICAgICJyZXN1bHQiOiAiZXJyb3IiLAogICAgICAibXNnIjogIlNvbWV0aGluZyB3ZW50IHdyb25nISIsCiAgICAgICJvdXRwdXQiOiBudWxsCiAgICB9CiAgfQp9"
+                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiR2V0IHByb2dyYW1tZSAobG9va3VwOyBQT1NUIGNhcnJpZXMgZmlsdGVycykiCiAgfSwKICAicmVxdWVzdCI6IHsKICAgICJtZXRob2QiOiAiUE9TVCIsCiAgICAicGF0aCI6ICJjb250ZW50L2NzZXNzaW9ucyIsCiAgICAiaGVhZGVycyI6IHsKICAgICAgIkFjY2VwdCI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgInBsYXRmb3JtIjogIktJT1NLIiwKICAgICAgImFwcHZlcnNpb24iOiAiMS4wLjAiLAogICAgICAiWC1LaW9zay1LZXkiOiAiKioqIgogICAgfSwKICAgICJib2R5IjogewogICAgICAiY2luZW1hSWQiOiAiMDAwMDAwMDAwMSIsCiAgICAgICJkYXRlZCI6ICIyMDI2LTA5LTI4IiwKICAgICAgImV4cGVyaWVuY2UiOiAiIiwKICAgICAgImxhbmd1YWdlIjogIiIsCiAgICAgICJyYXRpbmciOiAiIiwKICAgICAgImdlbnJlIjogIiIKICAgIH0KICB9LAogICJyZXNwb25zZSI6IHsKICAgICJzdGF0dXMiOiAyMDAsCiAgICAiZHVyYXRpb25NcyI6IDIwLAogICAgInNpemVCeXRlcyI6IDc1LAogICAgImhlYWRlcnMiOiB7CiAgICAgICJ2YXJ5IjogIk9yaWdpbiwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1NZXRob2QsIEFjY2Vzcy1Db250cm9sLVJlcXVlc3QtSGVhZGVycyIsCiAgICAgICJjb250ZW50LXR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJjb250ZW50LWxlbmd0aCI6ICI3NSIsCiAgICAgICJkYXRlIjogIk1vbiwgMjggU2VwIDIwMjYgMDc6NDg6MDggR01UIiwKICAgICAgImtlZXAtYWxpdmUiOiAidGltZW91dD02MCIsCiAgICAgICJjb25uZWN0aW9uIjogImtlZXAtYWxpdmUiCiAgICB9LAogICAgImNvZGUiOiAxMjAwMiwKICAgICJyZXN1bHQiOiAiZXJyb3IiLAogICAgIm1zZyI6ICJTb21ldGhpbmcgd2VudCB3cm9uZyEiLAogICAgImJvZHkiOiB7CiAgICAgICJjb2RlIjogMTIwMDIsCiAgICAgICJyZXN1bHQiOiAiZXJyb3IiLAogICAgICAibXNnIjogIlNvbWV0aGluZyB3ZW50IHdyb25nISIsCiAgICAgICJvdXRwdXQiOiBudWxsCiAgICB9CiAgfQp9"
                     },
                     {
                       "name": "checks",
@@ -323,13 +323,118 @@
           "column": 5
         }
       ]
+    },
+    {
+      "title": "api-03-ticket-types.spec.ts",
+      "file": "api-03-ticket-types.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "API-03 Ticket types: an expired session is rejected",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [
+                {
+                  "type": "purpose",
+                  "description": "Asking for ticket types of a session that no longer exists returns a clear \"Session has expired\" answer.",
+                  "location": {
+                    "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-03-ticket-types.spec.ts",
+                    "line": 4,
+                    "column": 5
+                  }
+                },
+                {
+                  "type": "why",
+                  "description": "A customer who waits too long on the kiosk must get a clear message instead of a crash or wrong prices.",
+                  "location": {
+                    "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-03-ticket-types.spec.ts",
+                    "line": 4,
+                    "column": 5
+                  }
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 610,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "GET content/trans/tickettype?cinemaId=0000000001&sessionId=0 -> HTTP 200 | code=11001 result=dialog msg=\"Session has expired\" (598 ms)\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "steps": [
+                    {
+                      "title": "GET content/trans/tickettype?cinemaId=0000000001&sessionId=0",
+                      "duration": 600
+                    },
+                    {
+                      "title": "Verify \"Session has expired\" is returned",
+                      "duration": 4
+                    }
+                  ],
+                  "startTime": "2026-09-28T07:48:09.249Z",
+                  "annotations": [
+                    {
+                      "type": "purpose",
+                      "description": "Asking for ticket types of a session that no longer exists returns a clear \"Session has expired\" answer.",
+                      "location": {
+                        "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-03-ticket-types.spec.ts",
+                        "line": 4,
+                        "column": 5
+                      }
+                    },
+                    {
+                      "type": "why",
+                      "description": "A customer who waits too long on the kiosk must get a clear message instead of a crash or wrong prices.",
+                      "location": {
+                        "file": "C:\\softwares\\vs code\\playwright\\CinescapeKiosk-API-Automation\\tests\\api-03-ticket-types.spec.ts",
+                        "line": 4,
+                        "column": 5
+                      }
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "api-call: GET content/trans/tickettype?cinemaId=0000000001&sessionId=0",
+                      "contentType": "application/json",
+                      "body": "ewogICJzYWZldHkiOiB7CiAgICAicmVhZE9ubHkiOiB0cnVlLAogICAgInB1cnBvc2UiOiAiR2V0IHRpY2tldCB0eXBlcyBmb3IgYSBzZXNzaW9uIgogIH0sCiAgInJlcXVlc3QiOiB7CiAgICAibWV0aG9kIjogIkdFVCIsCiAgICAicGF0aCI6ICJjb250ZW50L3RyYW5zL3RpY2tldHR5cGU/Y2luZW1hSWQ9MDAwMDAwMDAwMSZzZXNzaW9uSWQ9MCIsCiAgICAiaGVhZGVycyI6IHsKICAgICAgIkFjY2VwdCI6ICJhcHBsaWNhdGlvbi9qc29uIiwKICAgICAgInBsYXRmb3JtIjogIktJT1NLIiwKICAgICAgImFwcHZlcnNpb24iOiAiMS4wLjAiLAogICAgICAiWC1LaW9zay1LZXkiOiAiKioqIgogICAgfSwKICAgICJib2R5IjogbnVsbAogIH0sCiAgInJlc3BvbnNlIjogewogICAgInN0YXR1cyI6IDIwMCwKICAgICJkdXJhdGlvbk1zIjogNTk4LAogICAgInNpemVCeXRlcyI6IDc0LAogICAgImhlYWRlcnMiOiB7CiAgICAgICJ2YXJ5IjogIk9yaWdpbiwgQWNjZXNzLUNvbnRyb2wtUmVxdWVzdC1NZXRob2QsIEFjY2Vzcy1Db250cm9sLVJlcXVlc3QtSGVhZGVycyIsCiAgICAgICJjb250ZW50LXR5cGUiOiAiYXBwbGljYXRpb24vanNvbiIsCiAgICAgICJ0cmFuc2Zlci1lbmNvZGluZyI6ICJjaHVua2VkIiwKICAgICAgImRhdGUiOiAiTW9uLCAyOCBTZXAgMjAyNiAwNzo0ODowOSBHTVQiLAogICAgICAia2VlcC1hbGl2ZSI6ICJ0aW1lb3V0PTYwIiwKICAgICAgImNvbm5lY3Rpb24iOiAia2VlcC1hbGl2ZSIKICAgIH0sCiAgICAiY29kZSI6IDExMDAxLAogICAgInJlc3VsdCI6ICJkaWFsb2ciLAogICAgIm1zZyI6ICJTZXNzaW9uIGhhcyBleHBpcmVkIiwKICAgICJib2R5IjogewogICAgICAiY29kZSI6IDExMDAxLAogICAgICAicmVzdWx0IjogImRpYWxvZyIsCiAgICAgICJtc2ciOiAiU2Vzc2lvbiBoYXMgZXhwaXJlZCIsCiAgICAgICJvdXRwdXQiOiBudWxsCiAgICB9CiAgfQp9"
+                    },
+                    {
+                      "name": "checks",
+                      "contentType": "application/json",
+                      "body": "WwogIHsKICAgICJsYWJlbCI6ICJIVFRQIHN0YXR1cyBvZiBjb250ZW50L3RyYW5zL3RpY2tldHR5cGU/Y2luZW1hSWQ9MDAwMDAwMDAwMSZzZXNzaW9uSWQ9MCIsCiAgICAiZXhwZWN0ZWQiOiAiMjAwIiwKICAgICJhY3R1YWwiOiAiMjAwIiwKICAgICJwYXNzZWQiOiB0cnVlCiAgfSwKICB7CiAgICAibGFiZWwiOiAiUmVzcG9uc2UgY29kZSIsCiAgICAiZXhwZWN0ZWQiOiAiMTEwMDEiLAogICAgImFjdHVhbCI6ICIxMTAwMSIsCiAgICAicGFzc2VkIjogdHJ1ZQogIH0sCiAgewogICAgImxhYmVsIjogIlJlc3BvbnNlIG1lc3NhZ2UiLAogICAgImV4cGVjdGVkIjogIlwiU2Vzc2lvbiBoYXMgZXhwaXJlZFwiIiwKICAgICJhY3R1YWwiOiAiXCJTZXNzaW9uIGhhcyBleHBpcmVkXCIiLAogICAgInBhc3NlZCI6IHRydWUKICB9Cl0="
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "d23304b491eb51b5f0d9-2429823070b8988dc47d",
+          "file": "api-03-ticket-types.spec.ts",
+          "line": 4,
+          "column": 5
+        }
+      ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-09-28T07:47:34.923Z",
-    "duration": 485.235,
-    "expected": 1,
+    "startTime": "2026-09-28T07:48:08.414Z",
+    "duration": 1482.084,
+    "expected": 2,
     "skipped": 0,
     "unexpected": 1,
     "flaky": 0
