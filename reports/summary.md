@@ -1,19 +1,20 @@
-## CinescapeKiosk API tests: 6/7 passed, 1 failed
+## CinescapeKiosk API tests: 7/8 passed, 1 failed
 
-**Run** #7 · **commit** `c16e873` Add API-07 email domains test · **by** Chaithu200926 · **trigger** published from QA PC  
-**Machine** Local QA PC · **Node** v24.21.0 · **Playwright** 1.63.0 · **Cinema** 0000000001 · **Duration** 1.05s  
-**Pass-rate trend** (oldest → newest): 100% → 50% → 67% → 75% → 80% → 83% → 86%  
+**Run** #8 · **commit** `4f275da` Add API-08 clubcard amounts test · **by** Chaithu200926 · **trigger** published from QA PC  
+**Machine** Local QA PC · **Node** v24.21.0 · **Playwright** 1.63.0 · **Cinema** 0000000001 · **Duration** 1.10s  
+**Pass-rate trend** (oldest → newest): 100% → 50% → 67% → 75% → 80% → 83% → 86% → 88%  
 **Dashboard:** https://chaithu200926.github.io/CinescapeKiosk-API-Automation/
 
 | Test | Result | Last 10 runs | API call | HTTP | Code | Response message |
 |---|---|---|---|---|---|---|
-| API-01 Cinemas: kiosk cinema is listed and active | ✅ Passed | ✅✅✅✅✅✅✅ | `GET content/cinemas` | 200 | 10001 | (empty) |
-| API-02 Sessions: today's programme loads for the kiosk cinema | ❌ Failed | ▫️❌❌❌❌❌❌ | `POST content/csessions` | 200 | 12002 | Something went wrong! |
-| API-03 Ticket types: an expired session is rejected | ✅ Passed | ▫️▫️✅✅✅✅✅ | `GET content/trans/tickettype?cinemaId=0000000001&sessionId=0` | 200 | 11001 | Session has expired |
-| API-04 Seat layout: an expired session is rejected | ✅ Passed | ▫️▫️▫️✅✅✅✅ | `GET content/trans/seatlayoutkiosk?cinemaId=0000000001&sessionId=0&areacode=0` | 200 | 11001 | Session has expired |
-| API-05 Food menu: concession items are listed with prices | ✅ Passed | ▫️▫️▫️▫️✅✅✅ | `POST content/food/getfood` | 200 | 10001 | (empty) |
-| API-06 Coming soon: list is returned | ✅ Passed | ▫️▫️▫️▫️▫️✅✅ | `POST content/comingsoon` | 200 | 10001 | This is splash text |
-| API-07 Email domains: common domains are offered | ✅ Passed | ▫️▫️▫️▫️▫️▫️✅ | `GET content/email-domains` | 200 | 10001 | (empty) |
+| API-01 Cinemas: kiosk cinema is listed and active | ✅ Passed | ✅✅✅✅✅✅✅✅ | `GET content/cinemas` | 200 | 10001 | (empty) |
+| API-02 Sessions: today's programme loads for the kiosk cinema | ❌ Failed | ▫️❌❌❌❌❌❌❌ | `POST content/csessions` | 200 | 12002 | Something went wrong! |
+| API-03 Ticket types: an expired session is rejected | ✅ Passed | ▫️▫️✅✅✅✅✅✅ | `GET content/trans/tickettype?cinemaId=0000000001&sessionId=0` | 200 | 11001 | Session has expired |
+| API-04 Seat layout: an expired session is rejected | ✅ Passed | ▫️▫️▫️✅✅✅✅✅ | `GET content/trans/seatlayoutkiosk?cinemaId=0000000001&sessionId=0&areacode=0` | 200 | 11001 | Session has expired |
+| API-05 Food menu: concession items are listed with prices | ✅ Passed | ▫️▫️▫️▫️✅✅✅✅ | `POST content/food/getfood` | 200 | 10001 | (empty) |
+| API-06 Coming soon: list is returned | ✅ Passed | ▫️▫️▫️▫️▫️✅✅✅ | `POST content/comingsoon` | 200 | 10001 | This is splash text |
+| API-07 Email domains: common domains are offered | ✅ Passed | ▫️▫️▫️▫️▫️▫️✅✅ | `GET content/email-domains` | 200 | 10001 | (empty) |
+| API-08 Club card: top-up amounts are listed in ascending KWD | ✅ Passed | ▫️▫️▫️▫️▫️▫️▫️✅ | `GET clubcard/getamounts` | 200 | 10001 | (empty) |
 
 ### Failed checks
 
