@@ -6,14 +6,17 @@ const os = require('os');
 const path = require('path');
 const { execSync } = require('child_process');
 
+// Project folder; load .env so the (masked) target API and cinema can be shown.
 const root = path.join(__dirname, '..');
 require('dotenv').config({ path: path.join(root, '.env'), quiet: true });
 
+// Input (Playwright JSON results), output folder, history file and how many runs to keep.
 const resultsPath = path.join(root, 'test-results', 'results.json');
 const outputDir = path.join(root, process.env.REPORT_DIR || 'dashboard');
 const historyPath = process.env.KIOSK_HISTORY_FILE || path.join(outputDir, 'history.json');
 const HISTORY_LIMIT = 30;
 
+// Stop early if the tests have not been run yet.
 if (!fs.existsSync(resultsPath)) {
   console.error(`No results found at ${resultsPath}. Run "npm test" first.`);
   process.exit(1);
@@ -21,9 +24,12 @@ if (!fs.existsSync(resultsPath)) {
 const results = JSON.parse(fs.readFileSync(resultsPath, 'utf8'));
 
 // ---------- collect tests ----------
+// One entry per test with everything the dashboard shows.
 const tests = [];
 
+// Remove terminal colour codes from error messages.
 const stripAnsi = (s) => String(s || '').replace(/\u001b\[[0-9;]*m/g, '');
+// Read a JSON attachment (stored base64-encoded in results.json).
 const decode = (a) => {
   try {
     return JSON.parse(Buffer.from(a.body, 'base64').toString('utf8'));
@@ -32,6 +38,7 @@ const decode = (a) => {
   }
 };
 
+// Turn nested test steps into a flat list, remembering the nesting depth for indentation.
 function flattenSteps(steps, depth = 0) {
   return (steps || []).flatMap((s) => [
     { title: s.title, depth, duration: s.duration || 0, failed: !!s.error },
@@ -39,10 +46,13 @@ function flattenSteps(steps, depth = 0) {
   ]);
 }
 
+// Walk the results tree (files → suites → tests) and gather each test's data.
 function collect(suite) {
   for (const spec of suite.specs || []) {
     for (const t of spec.tests || []) {
+      // Use the last attempt of the test.
       const r = t.results?.[t.results.length - 1] || {};
+      // Read an annotation such as "purpose" or "why".
       const note = (type) => (t.annotations || []).find((a) => a.type === type)?.description || '';
       const attachments = r.attachments || [];
       tests.push({
@@ -57,14 +67,19 @@ function collect(suite) {
         steps: flattenSteps(r.steps).filter((s) => !/^(Before|After) Hooks$|^Fixture|^Worker Cleanup|^Attach/.test(s.title)),
         calls: attachments.filter((a) => a.name.startsWith('api-call: ') && a.body).map(decode).filter(Boolean),
         checks: decode(attachments.find((a) => a.name === 'checks' && a.body) || {}) || [],
+        // Extra tables a test publishes with showTable(), e.g. "Movies now showing".
+        tables: attachments.filter((a) => a.name.startsWith('table: ') && a.body).map(decode).filter(Boolean),
       });
     }
   }
+  // Continue into nested suites.
   for (const child of suite.suites || []) collect(child);
 }
 (results.suites || []).forEach(collect);
+// Sort by title so API-01, API-02, ... appear in order.
 tests.sort((a, b) => a.title.localeCompare(b.title, undefined, { numeric: true }));
 
+// Totals for the summary tiles.
 const isFail = (s) => ['failed', 'timedOut', 'interrupted'].includes(s);
 const total = tests.length;
 const passed = tests.filter((t) => t.status === 'passed').length;
@@ -74,6 +89,7 @@ const passRate = total ? Math.round((passed / total) * 100) : 0;
 const callCount = tests.reduce((n, t) => n + t.calls.length, 0);
 
 // ---------- run & environment info ----------
+// Run a git command and return its output ('' if git is not available).
 const git = (cmd) => {
   try {
     return execSync(`git ${cmd}`, { cwd: root, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
@@ -81,6 +97,7 @@ const git = (cmd) => {
     return '';
   }
 };
+// Installed version of an npm package, e.g. @playwright/test.
 const pkgVersion = (name) => {
   try {
     return JSON.parse(fs.readFileSync(path.join(root, 'node_modules', name, 'package.json'), 'utf8')).version;
@@ -88,6 +105,7 @@ const pkgVersion = (name) => {
     return 'unknown';
   }
 };
+// Hide the API host (the dashboard is public), keep protocol, port and path.
 const maskHost = (url) => {
   try {
     const u = new URL(url);
@@ -103,6 +121,7 @@ const repoSlug =
 const repoUrl = repoSlug ? `https://github.com/${repoSlug}` : '';
 const pagesUrl = repoSlug ? `https://${repoSlug.split('/')[0].toLowerCase()}.github.io/${repoSlug.split('/')[1]}/` : '';
 
+// Load earlier runs (empty on the very first run).
 let history = [];
 try {
   history = JSON.parse(fs.readFileSync(historyPath, 'utf8'));
@@ -110,6 +129,7 @@ try {
   history = [];
 }
 
+// Details of this run, shown in the "Run & environment" panel.
 const started = results.stats?.startTime ? new Date(results.stats.startTime) : new Date();
 const wallMs = results.stats?.duration || tests.reduce((s, t) => s + t.duration, 0);
 const sha = process.env.GITHUB_SHA || git('rev-parse HEAD');
@@ -137,6 +157,7 @@ const run = {
 };
 
 // ---------- history ----------
+// Add this run to the history (used by the trend chart and the "last 10 runs" squares).
 const entry = {
   run: run.number,
   at: run.started.toISOString(),
@@ -151,23 +172,33 @@ const entry = {
 // Re-running the script for the same results replaces the entry instead of adding a duplicate.
 history = history.filter((h) => h.at !== entry.at);
 history.push(entry);
+// Keep only the most recent runs, then save.
 history = history.slice(-HISTORY_LIMIT);
 fs.mkdirSync(path.dirname(historyPath), { recursive: true });
 fs.writeFileSync(historyPath, JSON.stringify(history, null, 2));
 
 // ---------- HTML helpers ----------
+// Make text safe to put inside HTML.
 const esc = (v) => String(v ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+// Milliseconds → "1.23s".
 const secs = (ms) => `${(ms / 1000).toFixed(2)}s`;
+// Date → "2026-09-28 07:45:31 UTC".
 const when = (d) => d.toISOString().replace('T', ' ').slice(0, 19) + ' UTC';
+// Test status → colour group (pass / fail / skip / none).
 const kind = (s) => (s === 'passed' ? 'pass' : s === 'skipped' ? 'skip' : isFail(s) ? 'fail' : 'none');
+// Symbol shown with each colour, so status is never colour-only.
 const icon = { pass: '✓', fail: '✗', skip: '–', none: '·' };
+// Test status → readable word.
 const label = (s) => ({ passed: 'Passed', failed: 'Failed', timedOut: 'Timed out', skipped: 'Skipped', interrupted: 'Interrupted' })[s] || 'Not run';
+// Object → two-column key/value table (used for headers).
 const kv = (obj) =>
   `<table class="kv">${Object.entries(obj || {})
     .map(([k, v]) => `<tr><th>${esc(k)}</th><td>${esc(v)}</td></tr>`)
     .join('')}</table>`;
+// Value → indented JSON text for <pre> blocks.
 const pretty = (v) => esc(typeof v === 'string' ? v : JSON.stringify(v, null, 2));
 
+// The "last 10 runs" squares for one test (✓ / ✗ / – with a tooltip per run).
 function historyChips(id) {
   const recent = history.slice(-10);
   return `<span class="chips" aria-label="Last ${recent.length} runs">${recent
@@ -179,6 +210,7 @@ function historyChips(id) {
     .join('')}</span>`;
 }
 
+// Stacked columns (passed / failed / skipped) for each run in the history.
 function trendChart() {
   const max = Math.max(1, ...history.map((h) => h.total));
   const cols = history
@@ -197,6 +229,7 @@ function trendChart() {
   <div class="legend"><span><i class="sw pass"></i>Passed</span><span><i class="sw fail"></i>Failed</span><span><i class="sw skip"></i>Skipped</span><span class="muted">Hover a column for details · x-axis: run number</span></div>`;
 }
 
+// One API call: method, path, HTTP status, response message, headers and bodies.
 function callHtml(c) {
   const ok = c.response.status >= 200 && c.response.status < 300;
   return `<div class="call">
@@ -218,6 +251,17 @@ function callHtml(c) {
   </div>`;
 }
 
+// A table a test published with showTable(), e.g. "Movies now showing".
+function dataTableHtml(t) {
+  const body = t.rows.length
+    ? t.rows.map((r) => `<tr>${r.map((cell) => `<td>${esc(cell)}</td>`).join('')}</tr>`).join('')
+    : `<tr><td colspan="${t.columns.length}" class="muted">No rows: the API returned no data for this table.</td></tr>`;
+  return `<h4 class="tcap">${esc(t.caption)} (${t.rows.length})</h4><div class="scroll"><table class="checks data"><thead><tr>${t.columns
+    .map((c) => `<th>${esc(c)}</th>`)
+    .join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
+}
+
+// The "Check / Expected / Actual / Result" table for one test.
 function checksHtml(checks) {
   if (!checks.length) return '';
   return `<div class="scroll"><table class="checks"><thead><tr><th>Check</th><th>Expected</th><th>Actual</th><th>Result</th></tr></thead><tbody>${checks
@@ -228,6 +272,7 @@ function checksHtml(checks) {
     .join('')}</tbody></table></div>`;
 }
 
+// One card per test: status, purpose, checks, published tables, API calls and steps.
 const testCards = tests
   .map((t) => {
     const k = kind(t.status);
@@ -243,6 +288,7 @@ const testCards = tests
   ${t.why ? `<p><b>Why it matters:</b> ${esc(t.why)}</p>` : ''}
   ${t.error ? `<details class="err"><summary>Failure details</summary><pre class="error">${esc(t.error)}</pre></details>` : ''}
   ${checksHtml(t.checks)}
+  ${t.tables.map(dataTableHtml).join('')}
   ${t.calls.map(callHtml).join('')}
   <details><summary>${t.steps.length} execution steps</summary><ol class="steps">${t.steps
     .map((s) => `<li class="${s.failed ? 'bad' : ''}" style="margin-left:${s.depth * 14}px">${esc(s.title)} <span class="muted">${secs(s.duration)}</span></li>`)
@@ -251,6 +297,7 @@ const testCards = tests
   })
   .join('\n');
 
+// Overview table rows: result, last HTTP status and response message, history squares.
 const overview = tests
   .map((t) => {
     const k = kind(t.status);
@@ -260,6 +307,7 @@ const overview = tests
   })
   .join('');
 
+// Rows of the "Run & environment" panel.
 const runInfo = {
   'Run': run.url ? `<a href="${esc(run.url)}">#${esc(run.number)}</a>` : esc(run.number),
   'Commit': run.commitUrl ? `<a href="${esc(run.commitUrl)}">${esc(run.commit)}</a> ${esc(run.commitMessage)}` : `${esc(run.commit || 'uncommitted')} ${esc(run.commitMessage)}`,
@@ -276,6 +324,8 @@ const runInfo = {
   'Safety mode': 'Read-only allowlist enforced (src/safety.ts)',
 };
 
+// ---------- the dashboard page ----------
+// Styles (light + dark), summary tiles, trend chart, run info, overview table, test cards, tooltip script.
 const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -327,7 +377,7 @@ table.list th { color:var(--muted); font-weight:500; font-size:13px; }
 .file { font-family:Consolas, monospace; font-size:12px !important; color:var(--muted); }
 .scroll { overflow-x:auto; max-width:100%; }
 .checks { width:100%; min-width:520px; border-collapse:collapse; font-size:13px; margin:10px 0; } .checks th, .checks td { text-align:left; padding:6px 8px; border-bottom:1px solid var(--line); vertical-align:top; }
-.checks th { color:var(--muted); font-weight:500; } .checks code { font-size:12px; word-break:break-word; } .checks tr.bad td { background:var(--critical-bg); }
+.checks th { color:var(--muted); font-weight:500; } .tcap { margin:14px 0 2px; font-size:14px; } .checks code { font-size:12px; word-break:break-word; } .checks tr.bad td { background:var(--critical-bg); }
 .call { border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin:10px 0; }
 .call-head { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
 .method { font-weight:700; font-size:12px; color:var(--accent); } .path { font-family:Consolas, monospace; font-size:13px; word-break:break-all; flex:1; }
@@ -371,6 +421,7 @@ ${testCards || '<p>No tests found.</p>'}
 </main>
 <div class="tip" id="tip"></div>
 <script>
+// Tooltip for the trend chart columns (mouse hover and keyboard focus).
 (function () {
   var tip = document.getElementById('tip');
   function show(e) { var c = e.currentTarget; tip.textContent = c.getAttribute('data-tip'); tip.style.display = 'block'; move(e); }
@@ -385,6 +436,7 @@ ${testCards || '<p>No tests found.</p>'}
 </script>
 </body></html>`;
 
+// Save the page and a copy of the history next to it (the history is also published).
 fs.mkdirSync(outputDir, { recursive: true });
 fs.writeFileSync(path.join(outputDir, 'index.html'), html);
 fs.writeFileSync(path.join(outputDir, 'history.json'), JSON.stringify(history, null, 2));
@@ -392,9 +444,13 @@ console.log(`Dashboard: ${path.join(outputDir, 'index.html')} (${passed}/${total
 
 // ---------- Markdown summary (summary.md, and the GitHub job summary when on Actions) ----------
 {
+  // Make text safe inside a Markdown table cell.
   const md = (s) => String(s ?? '').replace(/\|/g, '\\|').replace(/\r?\n/g, ' ');
+  // Status → emoji for the summary.
   const emoji = { pass: '✅', fail: '❌', skip: '⏭️', none: '▫️' };
+  // Last 10 results of one test as emojis.
   const trail = (id) => history.slice(-10).map((h) => emoji[h.tests[id] ? kind(h.tests[id]) : 'none']).join('');
+  // Heading, run details, trend and the main results table.
   const lines = [
     `## CinescapeKiosk API tests: ${passed}/${total} passed${failed ? `, ${failed} failed` : ''}${skipped ? `, ${skipped} skipped` : ''}`,
     '',
@@ -406,6 +462,7 @@ console.log(`Dashboard: ${path.join(outputDir, 'index.html')} (${passed}/${total
     '| Test | Result | Last 10 runs | API call | HTTP | Code | Response message |',
     '|---|---|---|---|---|---|---|',
   ];
+  // One row per API call (the test name and result appear on its first row).
   for (const t of tests) {
     const calls = t.calls.length ? t.calls : [null];
     calls.forEach((c, i) => {
@@ -414,12 +471,26 @@ console.log(`Dashboard: ${path.join(outputDir, 'index.html')} (${passed}/${total
       );
     });
   }
+  // Tables published by tests (e.g. "API-02 · Movies now showing").
+  for (const t of tests) {
+    for (const table of t.tables) {
+      lines.push('', `### ${md(t.id)} · ${md(table.caption)} (${table.rows.length})`, '');
+      if (!table.rows.length) {
+        lines.push('_No rows: the API returned no data for this table._');
+        continue;
+      }
+      lines.push(`| ${table.columns.map(md).join(' | ')} |`, `|${table.columns.map(() => '---').join('|')}|`);
+      for (const row of table.rows) lines.push(`| ${row.map(md).join(' | ')} |`);
+    }
+  }
+  // Every failed check with its expected and actual value.
   const failedChecks = tests.flatMap((t) => t.checks.filter((c) => !c.passed).map((c) => ({ t, c })));
   if (failedChecks.length) {
     lines.push('', '### Failed checks', '', '| Test | Check | Expected | Actual |', '|---|---|---|---|');
     for (const { t, c } of failedChecks) lines.push(`| ${md(t.id)} | ${md(c.label)} | \`${md(c.expected)}\` | \`${md(c.actual)}\` |`);
   }
   lines.push('', '_All calls passed the read-only allowlist. Full request/response details are on the dashboard._');
+  // Save summary.md; on GitHub Actions also add it to the run page.
   const summary = lines.join('\n') + '\n';
   fs.writeFileSync(path.join(outputDir, 'summary.md'), summary);
   if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);

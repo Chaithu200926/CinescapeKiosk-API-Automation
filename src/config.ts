@@ -1,8 +1,11 @@
+// Connection settings and the HTTP headers the kiosk app sends on every API call.
 import dotenv from 'dotenv';
 import path from 'path';
 
+// Load KIOSK_* settings from the .env file in the project folder (if it exists).
 dotenv.config({ path: path.resolve(__dirname, '..', '.env'), quiet: true });
 
+// Read a setting that must be present; stop with a clear message if it is missing.
 function required(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -11,15 +14,21 @@ function required(name: string): string {
   return value;
 }
 
+// All settings in one object.
 export const config = {
+  // API base address, always ending with "/".
   baseURL: required('KIOSK_API_BASE_URL').replace(/\/?$/, '/'),
+  // Kiosk key sent as X-Kiosk-Key.
   apiKey: required('KIOSK_API_KEY'),
+  // Cinema the kiosk is set up for.
   cinemaId: process.env.KIOSK_CINEMA_ID || '0000000001',
+  // App version sent in the "appversion" header.
   appVersion: process.env.KIOSK_APP_VERSION || '1.0.0',
 };
 
 /** Headers the CinescapeKiosk app sends on every API call. */
 export function kioskHeaders(overrides: Record<string, string | undefined> = {}): Record<string, string> {
+  // Start from the kiosk's standard headers, then apply the test's overrides.
   const headers: Record<string, string | undefined> = {
     Accept: 'application/json',
     platform: 'KIOSK',

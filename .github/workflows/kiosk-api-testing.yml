@@ -1,0 +1,126 @@
+# KIOSK API Testing: the one workflow for the CinescapeKiosk API test suite.
+#
+# How results get here:
+#   * Normal case: `npm run publish-results` runs the tests on the QA PC (the kiosk API is only
+#     reachable from the office network) and pushes the results into reports/. That push starts
+#     this workflow, which publishes the dashboard and the results table.
+#   * Optional: "Run workflow" with "Run tests on the self-hosted runner" ticked runs the tests on
+#     GitHub itself. This needs a self-hosted runner with label "kiosk-api" (currently blocked by
+#     Windows Device Guard on the QA PC).
+# There is deliberately no pull_request trigger: the repo is public and the runner would be internal.
+name: KIOSK API Testing
+
+# Title shown for each run in the Actions list.
+run-name: KIOSK API Testing · ${{ github.event_name == 'push' && github.event.head_commit.message || 'manual run' }}
+
+on:
+  # Start when new test results are pushed to main.
+  push:
+    branches: [main]
+    paths: ['reports/**']
+  # Allow starting it by hand from the Actions tab.
+  workflow_dispatch:
+    inputs:
+      run_on_runner:
+        description: Run tests on the self-hosted runner (needs a runner with label kiosk-api)
+        type: boolean
+        default: false
+
+# Permissions needed to publish to GitHub Pages.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two publishes at once; queue them instead.
+concurrency:
+  group: kiosk-api-testing
+  cancel-in-progress: false
+
+jobs:
+  # Job 1 (optional): run the tests on the self-hosted runner inside the office network.
+  run-tests:
+    name: Run API tests on self-hosted runner
+    if: github.event_name == 'workflow_dispatch' && inputs.run_on_runner
+    # KIOSK_API_BASE_URL / KIOSK_API_KEY / KIOSK_CINEMA_ID come from the runner's own .env file.
+    runs-on: [self-hosted, windows, kiosk-api]
+    defaults:
+      run:
+        shell: powershell
+    steps:
+      # Get the code, including the committed run history in reports/.
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      # Install the exact package versions from package-lock.json.
+      - name: Install dependencies
+        run: npm ci
+
+      # Run every test; failures are reported, not fatal, so the dashboard is still built.
+      - name: Run API tests
+        run: npx playwright test
+        continue-on-error: true
+
+      # Build the dashboard, results and history into reports/.
+      - name: Build dashboard
+        run: |
+          if (Test-Path reports\playwright-report) { Remove-Item reports\playwright-report -Recurse -Force }
+          Copy-Item playwright-report reports\playwright-report -Recurse
+          Copy-Item test-results\results.json reports\results.json -Force
+          $env:REPORT_DIR = 'reports'; $env:KIOSK_TRIGGER = 'self-hosted runner'
+          node scripts/generate-dashboard.js
+
+      # Hand the reports folder to the publish job.
+      - name: Upload reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: kiosk-api-reports
+          path: reports
+
+  # Job 2: show results on this run page and publish the dashboard to GitHub Pages.
+  publish:
+    name: Publish dashboard and results
+    needs: run-tests
+    # Run after job 1 succeeded, or when job 1 was skipped (the normal push case).
+    if: always() && (needs.run-tests.result == 'success' || needs.run-tests.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      # Get the committed reports/ folder.
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      # If the tests just ran on the runner, use those fresh reports instead.
+      - name: Use reports from the runner job
+        if: needs.run-tests.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: kiosk-api-reports
+          path: reports
+
+      # Put the results table (test, HTTP status, response message, history) on this run page.
+      - name: Show test results on this run
+        run: cat reports/summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Package reports/ as the website content.
+      - name: Upload dashboard to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: reports
+
+      # Publish the website.
+      - name: Deploy dashboard to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+
+      # Mark this run red when any test failed, so failures are visible in the Actions list.
+      - name: Fail the run if any test failed
+        run: |
+          failed=$(jq '.stats.unexpected // 0' reports/results.json)
+          echo "Failed tests: $failed"
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed test(s) failed. See the dashboard or the summary above."
+            exit 1
+          fi

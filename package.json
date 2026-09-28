@@ -1,4 +1,12 @@
 {
+  "//": {
+    "about": "Project file: name, the npm commands below, and the packages the tests need. JSON has no comments, so they live under this \"//\" key, which npm ignores.",
+    "scripts.test": "Run all API tests.",
+    "scripts.dashboard": "Build the HTML dashboard from the last test run into dashboard/.",
+    "scripts.publish-results": "Commit changes, run all tests, build the dashboard into reports/ and push to GitHub.",
+    "scripts.report": "Open the Playwright HTML report of the last run.",
+    "devDependencies": "@playwright/test = test runner and API client; @types/node = Node.js types; dotenv = loads .env; typescript = type checking."
+  },
   "name": "cinescapekiosk-api-automation",
   "version": "1.0.0",
   "description": "Playwright API automation for the CinescapeKiosk backend",

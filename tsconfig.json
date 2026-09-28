@@ -1,11 +1,19 @@
+// TypeScript settings used by the editor and `npx tsc --noEmit` for type checking.
 {
   "compilerOptions": {
+    // Language level of the compiled JavaScript.
     "target": "ES2022",
+    // Module format Node.js loads (require/exports).
     "module": "commonjs",
+    // Turn on all strict type checks.
     "strict": true,
+    // Allow `import x from 'package'` for CommonJS packages.
     "esModuleInterop": true,
+    // Skip checking library type files, for speed.
     "skipLibCheck": true,
+    // Make Node.js types (process, Buffer, ...) available.
     "types": ["node"]
   },
+  // Files that are type checked.
   "include": ["src", "tests", "playwright.config.ts"]
 }

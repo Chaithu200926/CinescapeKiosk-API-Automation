@@ -1,3 +1,4 @@
+// Read-only safeguard: the list of endpoints the tests may call, and the check that enforces it.
 /**
  * Read-only safeguard.
  *
@@ -8,6 +9,7 @@
  * POST is allowed here only where the kiosk uses it to send lookup filters
  * (e.g. content/csessions = "get programme"), or for a login attempt with a non-existent user.
  */
+// Allowed endpoints: path → the only HTTP method allowed, and what the call does (shown on the dashboard).
 export const READ_ONLY_ENDPOINTS: Record<string, { method: 'GET' | 'POST'; purpose: string }> = {
   'content/cinemas': { method: 'GET', purpose: 'List cinemas' },
   'content/csessions': { method: 'POST', purpose: 'Get programme (lookup; POST carries filters)' },
@@ -46,10 +48,13 @@ export const MUTATING_ENDPOINTS = [
 
 /** Throws unless method + path is on the read-only allowlist. */
 export function assertReadOnly(method: string, pathWithQuery: string) {
+  // Drop the query string and slashes so "content/cinemas?x=1" matches "content/cinemas".
   const path = pathWithQuery.split('?')[0].replace(/^\/+|\/+$/g, '');
+  // Allowed: the endpoint is on the list with this exact method.
   const rule = READ_ONLY_ENDPOINTS[path];
   if (rule && rule.method === method) return rule;
 
+  // Blocked: explain why, then stop before any request is sent.
   const why = MUTATING_ENDPOINTS.includes(path)
     ? 'it changes backend data, sends messages or is part of the booking/payment flow'
     : rule

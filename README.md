@@ -20,16 +20,18 @@ This one command:
 3. Builds the dashboard into [`reports/`](reports) and commits it.
 4. Pushes to `main`.
 
-The push triggers [`publish-dashboard.yml`](.github/workflows/publish-dashboard.yml) on GitHub, which:
+The push starts the **KIOSK API Testing** workflow
+([`kiosk-api-testing.yml`](.github/workflows/kiosk-api-testing.yml)) on GitHub, which:
 - shows the results table on the **Actions** run page,
 - deploys the dashboard to **GitHub Pages**,
 - marks the run ❌ if any test failed.
 
-**Future mode: self-hosted runner** ([`api-tests.yml`](.github/workflows/api-tests.yml), manual only for now)
+**Optional: run the tests on GitHub itself (self-hosted runner)**
 
-Windows Device Guard currently blocks the GitHub runner on the QA PC. Once IT allows
-`C:\actions-runner\bin\Runner.Listener.exe`, register the runner with the label `kiosk-api` and
-add the `push` trigger described in that file. GitHub then runs the tests itself on every push.
+The same workflow can run the tests on a self-hosted runner: Actions → KIOSK API Testing →
+**Run workflow** → tick *Run tests on the self-hosted runner*. Windows Device Guard currently
+blocks the runner on the QA PC; once IT allows `C:\actions-runner\bin\Runner.Listener.exe`,
+register the runner with the label `kiosk-api`.
 
 **Where results appear**
 - **GitHub Pages dashboard:** every test, every API call, HTTP status and the API's response message.

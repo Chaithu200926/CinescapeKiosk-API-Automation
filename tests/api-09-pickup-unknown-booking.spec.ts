@@ -1,3 +1,4 @@
+// API-09: checks that the Pickup lookup rejects a booking reference that does not exist.
 import { test, about, Code } from '../src/fixtures';
 import { config } from '../src/config';
 
@@ -8,8 +9,10 @@ test(
     'Prevents printing tickets for a mistyped or fake booking reference on the Pickup screen.',
   ),
   async ({ kioskApi, verify }) => {
+    // Look up a made-up booking reference (read-only lookup).
     const res = await kioskApi.get(`history/kiosk/booking?cinemaId=${config.cinemaId}&bookingReference=ZZZZ0000`);
 
+    // The backend must answer "Booking not found" (code 11001).
     await test.step('Verify "Booking not found" is returned', async () => {
       verify.answer(res, Code.NOT_FOUND_OR_EXPIRED, 'Booking not found');
     });
