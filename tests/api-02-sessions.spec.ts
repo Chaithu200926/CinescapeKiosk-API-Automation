@@ -10,17 +10,16 @@ test(
     'Without the programme, customers cannot choose a film or showtime, so no tickets can be sold.',
   ),
   async ({ kioskApi, verify }, testInfo) => {
-    // Today's date in the yyyy-MM-dd format the kiosk app sends.
-    const today = new Date().toISOString().slice(0, 10);
-
-    // Ask for today's programme with no filters, exactly like the kiosk's Films screen.
+    // Ask for today's programme with no filters, exactly as the kiosk app does (body recorded from the kiosk's own
+    // call on 30 Sep 2026): the cinema goes in "mid", an empty date means today, and "ALL" means no filter.
+    // (The earlier body with cinemaId, a yyyy-MM-dd date and empty filters got "Something went wrong!".)
     const res = await kioskApi.post('content/csessions', {
-      cinemaId: config.cinemaId,
-      dated: today,
-      experience: '',
-      language: '',
-      rating: '',
-      genre: '',
+      mid: config.cinemaId,
+      dated: '',
+      experience: 'ALL',
+      language: 'ALL',
+      rating: 'ALL',
+      genre: 'ALL',
     });
 
     // Pull the movies out of the answer and publish them as a table on the dashboard

@@ -29,19 +29,22 @@ export function extractMovies(output: unknown): MovieShowing[] {
     if (Array.isArray(node)) return node.forEach(visit);
     if (!node || typeof node !== 'object') return;
     const o = node as Json;
-    const title = text(o.title) || text(o.name) || text(o.movieName);
+    // The film's details are either on the object itself or in a "movie" object next to its sessions
+    // (the programme answer has daySessions: [{ movie: {...}, experienceSessions: [...], shows: [...] }]).
+    const film = (o.movie && typeof o.movie === 'object' ? o.movie : o) as Json;
+    const title = text(film.title) || text(film.name) || text(film.movieName);
 
-    // A movie is an object with a title and a list of sessions/shows under it.
+    // A movie is a title with a list of sessions/shows.
     if (title && (o.experienceSessions || o.shows)) {
       const movie = byTitle.get(title) ?? {
         title,
-        certification: text(o.certification),
-        runTime: text(o.runTimeStr),
+        certification: text(film.certification) || text(film.rating),
+        runTime: text(film.runTimeStr),
         experiences: [],
         showtimes: [],
         screens: [],
       };
-      collectShows(o, movie, '');
+      collectShows(o.experienceSessions ?? o.shows, movie, '');
       byTitle.set(title, movie);
       return;
     }
